@@ -3,6 +3,8 @@ const app = express()
 const cors = require('cors')
 const baseRouter = require('./router.js')
 const PORT = process.env.PORT || 5000
+require('dotenv').config()
+const mongodb = require('./config/mongoose');
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
