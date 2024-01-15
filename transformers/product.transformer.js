@@ -1,4 +1,4 @@
-const productTransformer = {
+const productDetailedTransformer = {
     transform: (product) => {
         return {
             id: product._id,
@@ -6,9 +6,25 @@ const productTransformer = {
             description: product.description,
             image: product.imageUrl,
             rating: product.rating,
-            category: product.category,
+            prices: product.prices.map(price => {
+                return {
+                    weight: price.weight,
+                    price: price.price,
+                    discountedPrice: price.discountedPrice,
+                }
+            }),
+            flavour: product.flavour,
+        }
+    }
+}
+
+const productTransformer = {
+    transform: (product) => {
+        return {
+            id: product._id,
+            name: product.name,
+            image: product.imageUrl,
             price: product.price,
-            discountedPrice: product.discountedPrice,
         }
     }
 }
@@ -23,4 +39,4 @@ const productListTransformer = {
     }
 }
 
-module.exports = { productTransformer, productListTransformer };
+module.exports = { productTransformer, productListTransformer, productDetailedTransformer };
