@@ -1,0 +1,42 @@
+const { isValidForCreate, isValidForUpdate } = require('../validators/cart.validator')
+const cartService = require('../services/cart.service')
+const { cartTransformer } = require('../transformers/cart.transformer')
+const show = async (req, res) => {
+    try {
+        return res.status(200).json(cartTransformer.transform(await cartService.show({ userId: req.params.userId })))
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+const create = async (req, res) => {
+    try {
+        const { error, value } = isValidForCreate.validate(req.body)
+        if (error) {
+            return res.status(400).json({ message: error.message })
+        }
+
+        return res.status(200).json(cartTransformer.transform(await cartService.create({ data: value })))
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+const update = async (req, res) => {
+    try {
+        const { error, value } = isValidForUpdate.validate(req.body)
+        if (error) {
+            return res.status(400).json({ message: error.message })
+        }
+
+        return res.status(200).json(cartTransformer.transform(await cartService.update({ userId: req.params.userId, data: value })))
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+module.exports = {
+    show,
+    create,
+    update,
+}
