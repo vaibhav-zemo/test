@@ -1,6 +1,7 @@
 module.exports = {
-    ORDERED: 'ordered',
+    PENDING: 'pending',
     DISPATCHED: 'dispatched',
     DELIVERED: 'delivered',
-    CANCELLED: 'cancelled'
+    CANCELLED: 'cancelled',
+    ACCEPTED: 'accepted',
 }
