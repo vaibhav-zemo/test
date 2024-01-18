@@ -4,4 +4,5 @@ const authController = require('../controllers/auth.controller')
 
 router.post('/getOtp', authController.create)
 
+
 module.exports = router

@@ -16,13 +16,15 @@ const getUserTransformer = {
             phoneNumber: user?.phoneNumber,
             email: user?.email,
             gender: user?.gender,
-            address: {
-                houseNumber: user?.address?.houseNumber,
-                area: user?.address?.area,
-                city: user?.address?.city,
-                state: user?.address?.state,
-                pinCode: user?.address?.pinCode,
-            },
+            address: user?.address.map((address) => {
+                return {
+                    street: address.street,
+                    city: address.city,
+                    state: address.state,
+                    pinCode: address.pinCode,
+                    id: address._id
+                }
+            }),
             role: user?.role,
         }
     }
@@ -37,5 +39,7 @@ const userListTransformer = {
         return response
     }
 }
+
+
 
 module.exports = { userTransformer, getUserTransformer, userListTransformer };

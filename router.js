@@ -7,6 +7,7 @@ const cityRoute = require('./routers/city.router')
 const cartRoute = require('./routers/cart.router')
 const couponRoute = require('./routers/coupon.router')
 const orderRoute = require('./routers/order.router')
+const addressRoute = require('./routers/address.router')
 
 router.use('/auth', authRoute)
 router.use('/user', userRoute)
@@ -15,5 +16,6 @@ router.use('/city', cityRoute)
 router.use('/cart', cartRoute)
 router.use('/coupon', couponRoute)
 router.use('/order', orderRoute)
+router.use('/address', addressRoute)
 
 module.exports = router

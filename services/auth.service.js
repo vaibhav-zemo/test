@@ -1,12 +1,22 @@
 const User = require('../models/user.model');
 const request = require('request');
+const { sendOtp } = require('../mailers/otp.mailer');
 
-const create = async ({ phoneNumber }) => {
-    const user = await User.findOne({ phoneNumber });
-    const otp = _generateOTP(6);
+const create = async ({ phoneNumber, mail }) => {
+    try {
+        const otp = _generateOTP(6);
+        if (mail) {
+            sendOtp(otp, mail);
+            return { otp };
+        }
+        const user = await User.findOne({ phoneNumber });
 
-    // _sendOTP(otp, phoneNumber);
-    return {userId: user?._id, otp};
+        // _sendOTP(otp, phoneNumber);
+        return { userId: user?._id, otp };
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }
 
 const _generateOTP = (otp_length) => {
@@ -32,7 +42,7 @@ const _sendOTP = async (otp, phoneNumber) => {
             otp: otp,
         },
     };
-    
+
     request(options, function (error, response, body) {
         if (error) throw new Error(error);
         console.log(body);

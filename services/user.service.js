@@ -4,14 +4,14 @@ const Merchant = require('../models/merchant.model');
 const { MERCHANT, CUSTOMER } = require('../constants/userRole');
 const jwt = require('jsonwebtoken');
 
-const create = async ({ name, gender, phoneNumber, role, shopName }) => {
+const create = async ({ name, email, phoneNumber, role, shopName }) => {
     try {
         let user = await User.findOne({ phoneNumber });
 
         if (!user) {
             const newUser = new User({
                 userName: name,
-                gender: gender,
+                email: email,
                 phoneNumber: phoneNumber,
                 role: role,
             });
@@ -49,7 +49,7 @@ const remove = async ({ userId }) => {
         const userToRemove = await User.findByIdAndDelete(userId);
         if (!userToRemove) throw new Error('User not found');
 
-        return userToRemove;
+        return;
     }
     catch (error) {
         throw new Error(error);
@@ -88,7 +88,7 @@ const list = async () => {
 
 const show = async ({ userId }) => {
     try {
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate('address');
         if (!user) throw new Error('User not found');
 
         return user;
