@@ -18,7 +18,7 @@ const create = async (req, res) => {
 
         return res.status(200).json(cartTransformer.transform(await cartService.create({ data: value })))
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error' })
+        return res.status(500).json({ message: error.message })
     }
 }
 
@@ -31,7 +31,7 @@ const update = async (req, res) => {
 
         return res.status(200).json(cartTransformer.transform(await cartService.update({ userId: req.params.userId, data: value })))
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error' })
+        return res.status(500).json({ message: error.message })
     }
 }
 

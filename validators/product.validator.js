@@ -1,18 +1,18 @@
 const Joi = require('joi');
 
 const priceSchema = Joi.object({
-    weight: Joi.string().required(),
+    weight: Joi.string(),
     price: Joi.number().required(),
-    discountedPrice: Joi.number().required(),
 })
 
 const productSchema = Joi.object({
     name: Joi.string().required(),
-    description: Joi.string().required(),
+    description: Joi.string(),
     imageUrl: Joi.string().required(),
     category: Joi.string().required(),
     prices: Joi.array().items(priceSchema).required(),
-    flavour: Joi.string().required(),
+    flavours: Joi.string(),
+    discount: Joi.number(),
 })
 
 const isValidForCreate = Joi.object({
@@ -20,4 +20,14 @@ const isValidForCreate = Joi.object({
     product: productSchema.required()
 });
 
-module.exports = { isValidForCreate }
+const isValidForUpdate = Joi.object({
+    name: Joi.string(),
+    description: Joi.string(),
+    imageUrl: Joi.string(),
+    category: Joi.string(),
+    prices: Joi.array().items(priceSchema),
+    flavours: Joi.string(),
+    discount: Joi.number(),
+}).min(1);
+
+module.exports = { isValidForCreate, isValidForUpdate }

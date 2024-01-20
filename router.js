@@ -8,6 +8,7 @@ const cartRoute = require('./routers/cart.router')
 const couponRoute = require('./routers/coupon.router')
 const orderRoute = require('./routers/order.router')
 const addressRoute = require('./routers/address.router')
+const categoryRoute = require('./routers/category.router')
 
 router.use('/auth', authRoute)
 router.use('/user', userRoute)
@@ -17,5 +18,6 @@ router.use('/cart', cartRoute)
 router.use('/coupon', couponRoute)
 router.use('/order', orderRoute)
 router.use('/address', addressRoute)
+router.use('/category', categoryRoute)
 
 module.exports = router

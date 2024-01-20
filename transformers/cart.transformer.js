@@ -3,12 +3,16 @@ const cartTransformer = {
         return {
             items: cart.items.map(item => {
                 return {
-                    productId: item.productId,
+                    id: item._id,
+                    name: item.product.name,
+                    imageUrl: item.product.imageUrl,
+                    flavour: item.flavour,
                     quantity: item.quantity,
                     message: item.message,
                     weight: item.weight,
                     price: item.price,
-                    discountedPrice: item.discountedPrice,
+                    discount: item.discount,
+                    occasion: item.occasion,
                 }
             }),
             totalAmount: cart.totalAmount,
