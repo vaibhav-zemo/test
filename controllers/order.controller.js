@@ -11,7 +11,7 @@ const create = async (req, res) => {
         
         return res.status(200).json(orderDetailedTransformer.transform(await orderService.create({data: value})));
     } catch (err) {
-        return res.status(500).json({message: "Internal server error"});
+        return res.status(500).json({message: err.message});
     }
 }
 
@@ -25,9 +25,9 @@ const show = async (req, res) => {
 
 const list = async (req, res) => {
     try {
-        return res.status(200).json(orderListTransformer.transform(await orderService.list()));
+        return res.status(200).json(orderListTransformer.transform(await orderService.list({userId: req.query.userId})));
     } catch (err) {
-        return res.status(500).json({message: "Internal server error"});
+        return res.status(500).json({message: err.message});
     }
 }
 

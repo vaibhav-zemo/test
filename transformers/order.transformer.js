@@ -5,11 +5,16 @@ const orderDetailedTransformer = {
             userId: order.userId,
             items: order.items.map(item => {
                 return {
-                    productId: item.productId,
+                    name: item.product.name,
+                    imageUrl: item.product.imageUrl,
                     quantity: item.quantity,
                     price: item.price,
                     weight: item.weight,
-                    message: item.message
+                    message: item.message,
+                    occasion: item.occasion,
+                    flavour: item.flavour,
+                    rating: item.rating,
+                    discount: item.discount,
                 }
             }),
             createdAt: order.createdAt,
@@ -28,7 +33,7 @@ const orderTransformer = {
             id: order._id,
             createdAt: order.createdAt,
             status: order.status,
-            orderName: order.items[0].productId.name,
+            orderName: order?.items[0]?.product?.name,
         }
     }
 }

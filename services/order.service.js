@@ -1,6 +1,7 @@
 const Order = require('../models/order.model');
 const User = require('../models/user.model');
 const Product = require('../models/product.model');
+const Customer = require('../models/customer.model');
 
 const create = async ({data}) => {
     try {
@@ -15,8 +16,20 @@ const create = async ({data}) => {
             throw new Error('Product not found');
         }
 
+        for(let item of data.items) {
+            item.product = item.productId;
+        }
+
         const order = new Order(data);
-        await order.save();
+        (await order.save()).populate('items.product');
+
+        const customer = await Customer.findOne({userId: user._id});
+        if (!customer) {
+            throw new Error('Customer not found');
+        }
+
+        customer.orders.push(order);
+        await customer.save();
 
         return order;
     } catch (error) {
@@ -26,7 +39,7 @@ const create = async ({data}) => {
 
 const show = async ({id}) => {
     try {
-        const order = await Order.findById(id);
+        const order = await Order.findById(id).populate('items.product');
         if (!order) {
             throw new Error('Order not found');
         }
@@ -36,12 +49,16 @@ const show = async ({id}) => {
     }
 }
 
-const list = async () => {
+const list = async ({userId}) => {
     try {
-        const orders = await Order.find().populate('items.productId');
-        return orders;
+        const customer = await Customer.findOne({userId}).populate('orders');
+        if (!customer) {
+            throw new Error('Customer not found');
+        }
+        
+        return customer.orders;
     } catch (error) {
-        console.log(error)
+        throw new Error(error.message)
     }
 }
 
