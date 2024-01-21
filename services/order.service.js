@@ -3,27 +3,27 @@ const User = require('../models/user.model');
 const Product = require('../models/product.model');
 const Customer = require('../models/customer.model');
 
-const create = async ({data}) => {
+const create = async ({ data }) => {
     try {
         const user = await User.findById(data.userId);
         if (!user) {
             throw new Error('User not found');
         }
-        
+
         const productIds = data.items.map(item => item.productId);
-        const products = await Product.find({_id: {$in: productIds}});
+        const products = await Product.find({ _id: { $in: productIds } });
         if (products.length !== productIds.length) {
             throw new Error('Product not found');
         }
 
-        for(let item of data.items) {
+        for (let item of data.items) {
             item.product = item.productId;
         }
 
         const order = new Order(data);
         (await order.save()).populate('items.product');
 
-        const customer = await Customer.findOne({userId: user._id});
+        const customer = await Customer.findOne({ userId: user._id });
         if (!customer) {
             throw new Error('Customer not found');
         }
@@ -37,7 +37,7 @@ const create = async ({data}) => {
     }
 }
 
-const show = async ({id}) => {
+const show = async ({ id }) => {
     try {
         const order = await Order.findById(id).populate('items.product');
         if (!order) {
@@ -49,13 +49,19 @@ const show = async ({id}) => {
     }
 }
 
-const list = async ({userId}) => {
+const list = async ({ userId }) => {
     try {
-        const customer = await Customer.findOne({userId}).populate('orders');
+        const customer = await Customer.findOne({ userId }).populate({
+            path: 'orders',
+            model: 'Order',
+            populate: {
+                path: 'items.product'
+            }
+        });
         if (!customer) {
             throw new Error('Customer not found');
         }
-        
+
         return customer.orders;
     } catch (error) {
         throw new Error(error.message)
