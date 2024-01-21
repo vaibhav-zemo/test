@@ -1,24 +1,33 @@
 const Cart = require('../models/cart.model')
 const User = require('../models/user.model')
+const Product = require('../models/product.model')
 
-const create = async ({ data }) => {
+const create = async ({ userId, item }) => {
     try {
-        const user = await User.findById(data.userId);
+        const user = await User.findById(userId);
         if (!user) {
             throw new Error('User not found')
         }
 
-        for (let item of data.items) {
-            item.product = item.productId;
+        const product = await Product.findById(item.productId);
+        if (!product) {
+            throw new Error('Product not found')
         }
-
-        const cart = new Cart(data)
-        let amount = 0;
-        for (let item of cart.items) {
-            amount += item.price * item.quantity
+        
+        const cart = await Cart.findOne({userId}).populate('items.product');
+        
+        item.product = item.productId;
+        if (cart) {
+            cart.totalAmount += item.price * item.quantity;
+            cart.items.push(item)
+            await cart.save()
         }
-        cart.totalAmount = amount;
-        await cart.save()
+        else {
+            const cart = new Cart({ userId });
+            cart.items.push(item);
+            cart.totalAmount = item.price * item.quantity;
+            await cart.save()
+        }
 
         return cart;
     } catch (error) {
@@ -71,7 +80,7 @@ const update = async ({ userId, data }) => {
             const item = cart.items[index];
             const prevQuantity = item.quantity;
             cart.items[index].quantity = quantity;
-            if(quantity == 0){
+            if (quantity == 0) {
                 cart.items.pull(itemId)
             }
             const amount = item.price * quantity - item.price * prevQuantity;

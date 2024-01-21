@@ -6,34 +6,30 @@ module.exports.checkAuth = async (req, res, next) => {
     try {
         const header = req.headers.authorization;
         if (!header) {
-            next({ status: 403, message: "auth header is missing" })
-            return
+            throw new Error("auth token is missing")
         }
-        const token = header.split('Bearer ')[1];
 
+        const token = header.split('Bearer ')[1];
         if (!token) {
-            next({ status: 403, message: "auth token is missing" })
-            return
+            throw new Error("auth token is missing")
         }
 
         const { userId } = jwt.verify(token, process.env.JWT_SECRET);
 
         if (!userId) {
-            next({ status: 403, message: "auth token is invalid" })
-            return
+            throw new Error("auth token is invalid")
         }
 
         const user = await User.findById(userId);
 
         if (!user) {
-            next({ status: 404, message: "user not found" })
-            return
+            throw new Error("user not found")
         }
 
         res.locals.user = user
         next()
     } catch (err) {
-        next(err)
+        return res.status(500).json({ message: err.message })
     }
 }
 

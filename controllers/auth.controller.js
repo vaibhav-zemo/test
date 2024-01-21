@@ -11,7 +11,7 @@ const create = async (req, res) => {
         
         return res.status(200).json(authTransformer.transform(await authService.create({ ...value })));
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error' })
+        res.status(500).json({ message: error.message })
     }
 }
 

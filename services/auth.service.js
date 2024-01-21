@@ -14,8 +14,7 @@ const create = async ({ phoneNumber, mail }) => {
         // _sendOTP(otp, phoneNumber);
         return { userId: user?._id, otp };
     } catch (error) {
-        console.log(error);
-        throw error;
+        throw new Error(error.message);
     }
 }
 
