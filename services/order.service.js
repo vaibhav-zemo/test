@@ -33,7 +33,7 @@ const create = async ({ data }) => {
 
         return order;
     } catch (error) {
-        console.log(error)
+        throw new Error(error.message)
     }
 }
 
@@ -45,7 +45,7 @@ const show = async ({ id }) => {
         }
         return order;
     } catch (error) {
-        console.log(error)
+        throw new Error(error.message)
     }
 }
 

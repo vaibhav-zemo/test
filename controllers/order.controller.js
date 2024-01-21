@@ -19,7 +19,7 @@ const show = async (req, res) => {
     try {
         return res.status(200).json(orderDetailedTransformer.transform(await orderService.show({id: req.params.id})));
     } catch (err) {
-        return res.status(500).json({message: "Internal server error"});
+        return res.status(500).json({message: err.message});
     }
 }
 
