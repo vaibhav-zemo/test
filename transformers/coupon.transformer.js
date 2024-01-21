@@ -1,4 +1,4 @@
-const couponTransformer = {
+const couponDetailedTransformer = {
     transform: (coupon) => {
         return {
             id: coupon._id,
@@ -15,6 +15,20 @@ const couponTransformer = {
     }
 }
 
+const couponTransformer = {
+    transform: (coupon) => {
+        return {
+            id: coupon._id,
+            code: coupon.code,
+            discountType: coupon.discountType,
+            flatDiscount: coupon?.flatDiscount,
+            percentageDiscount: coupon?.percentageDiscount,
+            maxDiscount: coupon.maxDiscount,
+            description: coupon.description,
+        }
+    }
+}
+
 const couponListTransformer = {
     transform: (couponList) => {
         const response = {}
@@ -25,4 +39,4 @@ const couponListTransformer = {
     }
 }
 
-module.exports = {couponTransformer, couponListTransformer}
+module.exports = {couponTransformer, couponListTransformer, couponDetailedTransformer}

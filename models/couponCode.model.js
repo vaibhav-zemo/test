@@ -3,7 +3,7 @@ const discountType = require('../constants/discountType')
 
 const CouponCodeSchema = new mongoose.Schema({
     discountType: {type: String, enum: [discountType.FLAT, discountType.PERCENTAGE], required: true},
-    code: {type: String, required: true, unique: true},
+    code: {type: String, required: true},
     flatDiscount: {type: Number},
     percentageDiscount: {type: Number},
     maxDiscount: {type: Number},

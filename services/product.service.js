@@ -25,7 +25,7 @@ const create = async ({ data }) => {
             throw new Error('Category not found')
         }
 
-        data.product.flavours = data.product.flavours.split(' ')
+        if(data.product.flavours) data.product.flavours = data.product.flavours.split(' ')
         data.product.category = category._id
         
         const product = new Product(data.product)
@@ -44,9 +44,12 @@ const create = async ({ data }) => {
     }
 }
 
-const list = async () => {
+const list = async ({city}) => {
     try {
-        return await Product.find()
+        const searchCity = await City.findOne({name: city}).populate('products')
+        if(!searchCity) throw new Error('City not found')
+
+        return searchCity.products;
     } catch (error) {
         throw new Error(error.message)
     }

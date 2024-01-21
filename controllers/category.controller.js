@@ -40,7 +40,7 @@ const update = async (req, res) => {
 
 const list = async (req, res) => {
     try {
-        return res.status(200).json(categoryListTransformer.transform(await categoryService.list()))
+        return res.status(200).json(categoryListTransformer.transform(await categoryService.list({city: req.query.city})))
     }
     catch (err) {
         return res.status(500).json({ message: err.message })

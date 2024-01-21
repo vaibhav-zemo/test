@@ -2,6 +2,7 @@ const Joi = require('joi');
 const { PERCENTAGE, FLAT } = require('../constants/discountType')
 
 const isValidForCreate =  Joi.object({
+    city: Joi.string().required(),
     discountType: Joi.string().valid(FLAT, PERCENTAGE).required(),
     code: Joi.string().max(10).required(),
     flatDiscount: Joi.number().when('discountType', {is: FLAT, then: Joi.required()}),
@@ -19,6 +20,6 @@ const isValidForUpdate = Joi.object({
     maxDiscount: Joi.number(),
     expiryDate: Joi.date(),
     description: Joi.string()
-})
+}).min(1)
 
 module.exports = { isValidForCreate, isValidForUpdate }

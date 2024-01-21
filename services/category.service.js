@@ -1,9 +1,11 @@
 const Category = require('../models/category.model');
 const City = require('../models/city.model');
 
-const list = async () => {
+const list = async ({city}) => {
     try {
-        return await Category.find()
+        const searchCity = await City.findOne({name: city}).populate('categories')
+        if(!searchCity) throw new Error('City not found')
+        return searchCity.categories;
     }
     catch (err) {
         throw new Error(err.message)

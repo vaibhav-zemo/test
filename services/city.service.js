@@ -1,24 +1,11 @@
 const City = require('../models/city.model')
 const Product = require('../models/product.model')
 const Category = require('../models/category.model')
-
+const CouponCode = require('../models/couponCode.model')
 const list = async () => {
     try {
         return await City.find();
     }
-    catch (err) {
-        throw new Error(err.message)
-    }
-}
-
-const show = async ({city}) => {
-    try {
-        const searchCity = await City.findOne({name: city}).populate('categories');
-
-        if(!searchCity) throw new Error("City not found");
-
-        return searchCity.categories;
-    }   
     catch (err) {
         throw new Error(err.message)
     }
@@ -47,6 +34,10 @@ const remove = async ({id}) => {
             await Category.findByIdAndDelete(category);
         }
 
+        for(let coupon of city.coupons){
+            await CouponCode.findByIdAndDelete(coupon);
+        }
+
         await City.findByIdAndDelete(id);
         return;
     }
@@ -55,4 +46,4 @@ const remove = async ({id}) => {
     }
 }
 
-module.exports = { show, list, create, remove }
+module.exports = { list, create, remove }

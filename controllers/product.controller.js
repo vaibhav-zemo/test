@@ -14,9 +14,9 @@ const create = async (req, res) => {
 
 const list = async (req, res) => {
     try {
-        return res.status(200).json(productListTransformer.transform(await productService.list()));
+        return res.status(200).json(productListTransformer.transform(await productService.list({city: req.query.city})));
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error' })
+        res.status(500).json({ message: error.message })
     }
 }
 
