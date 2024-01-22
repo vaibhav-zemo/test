@@ -55,7 +55,7 @@ const remove = async ({ id }) => {
         await city.save()
 
         await Category.findByIdAndDelete(id)
-        return;
+        return { message: "Category deleted successfully" };
     }
     catch (err) {
         throw new Error(err.message)

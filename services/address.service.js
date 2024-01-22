@@ -52,7 +52,7 @@ const remove = async ({addressId}) => {
 
         await user.save();
         await Address.findByIdAndDelete(addressId);
-        return;
+        return {message: "Address deleted successfully"};
     } catch (error) {
         throw new Error(error)
     }

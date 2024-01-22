@@ -17,8 +17,7 @@ const create = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        await categoryService.remove({id: req.params.id})
-        return res.status(200).json("Category deleted")
+        return res.status(200).json(await categoryService.remove({id: req.params.id}))
     }
     catch (err) {
         return res.status(500).json({ message: err.message })

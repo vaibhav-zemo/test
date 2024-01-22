@@ -80,7 +80,8 @@ const remove = async ({ id }) => {
         city.products.pull(product)
         await city.save()
 
-        return await Product.findByIdAndDelete(id)
+        await Product.findByIdAndDelete(id)
+        return { message: "Product deleted successfully" }
     } catch (error) {
         throw new Error(error.message)
     }

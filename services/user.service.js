@@ -49,7 +49,7 @@ const remove = async ({ userId }) => {
         const userToRemove = await User.findByIdAndDelete(userId);
         if (!userToRemove) throw new Error('User not found');
 
-        return;
+        return { message: 'User deleted successfully' };
     }
     catch (error) {
         throw new Error(error);

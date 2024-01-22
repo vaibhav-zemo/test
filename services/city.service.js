@@ -39,7 +39,7 @@ const remove = async ({id}) => {
         }
 
         await City.findByIdAndDelete(id);
-        return;
+        return {message: "City deleted successfully"};
     }
     catch (err) {
         throw new Error(err.message)

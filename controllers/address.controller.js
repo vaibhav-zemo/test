@@ -26,8 +26,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        await addressService.remove({ addressId: req.params.addressId });
-        return res.status(200).json("Address Deleted");
+        return res.status(200).json(await addressService.remove({ addressId: req.params.addressId }));
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }

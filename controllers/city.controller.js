@@ -25,8 +25,7 @@ const create = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        await cityService.remove({ id: req.params.id });
-        return res.status(200).json({ message: 'City removed' });
+        return res.status(200).json(await cityService.remove({ id: req.params.id }));
     }
     catch (err) {
         res.status(500).json({ message: err.message })

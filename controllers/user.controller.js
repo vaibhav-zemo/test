@@ -28,8 +28,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        await userService.remove({ userId: req.params.userId });
-        return res.status(200).json("User Deleted");
+        return res.status(200).json(await userService.remove({ userId: req.params.userId }));
     } catch (err) {
         return res.status(500).json({message: err.message});
     }

@@ -30,8 +30,7 @@ const show = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        await productService.remove({ id: req.params.id });
-        return res.status(200).json("Product deleted successfully");
+        return res.status(200).json(await productService.remove({ id: req.params.id }));
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
