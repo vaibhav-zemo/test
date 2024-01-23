@@ -1,10 +1,10 @@
 const categoryTransformer = {
     transform: (category) => {
         return {
-            id: category._id,
-            name: category.name,
-            image: category.imageUrl,
-            price: category.price,
+            id: category?._id,
+            name: category?.name,
+            image: category?.imageUrl,
+            price: category?.price,
         }
     }
 }
@@ -22,18 +22,19 @@ const categoryListTransformer = {
 const categoryDetailedTransformer = {
     transform: (category) => {
         return {
-            id: category._id,
-            name: category.name,
-            products: category.products.map(product => {
+            id: category?._id,
+            name: category?.name,
+            products: category?.products?.map(product => {
                 return {
-                    id: product._id,
-                    name: product.name,
-                    image: product.imageUrl,
-                    price: product.prices[0].price,
-                    rating: product.rating,
-                    discount: product.discount,
-                    description: product.description,
-                    flavours: product.flavours,
+                    id: product?._id,
+                    name: product?.name,
+                    image: product?.imageUrl,
+                    price: product?.prices[0].price,
+                    discountedPrice: Math.ceil(product?.prices[0]?.price * 1.25),
+                    rating: product?.rating,
+                    discount: product?.discount,
+                    description: product?.description,
+                    flavours: product?.flavours,
                 }
             })
         }

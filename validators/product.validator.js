@@ -3,6 +3,7 @@ const Joi = require('joi');
 const priceSchema = Joi.object({
     weight: Joi.string(),
     price: Joi.number().required(),
+    shopPrice: Joi.number().required(),
 })
 
 const productSchema = Joi.object({
