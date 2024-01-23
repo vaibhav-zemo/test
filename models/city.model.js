@@ -5,6 +5,7 @@ const CitySchema = new mongoose.Schema({
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
     categories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
     coupons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CouponCode' }],
+    offers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Offer' }],
 }, {timestamps: true})
 
 module.exports = mongoose.model('City', CitySchema)
