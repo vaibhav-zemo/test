@@ -14,8 +14,16 @@ const create = async ({ userId, item }) => {
             throw new Error('Product not found')
         }
         
-        const cart = await Cart.findOne({userId}).populate('items.product');
-        
+        let cart = await Cart.findOne({userId}).populate({
+            path: 'items',
+            populate: {
+                path: 'product',
+                populate: {
+                    path: 'category'
+                }
+            }
+        });
+
         item.product = item.productId;
         if (cart) {
             cart.totalAmount += item.price * item.quantity;
@@ -23,7 +31,7 @@ const create = async ({ userId, item }) => {
             await cart.save()
         }
         else {
-            const cart = new Cart({ userId });
+            cart = new Cart({ userId });
             cart.items.push(item);
             cart.totalAmount = item.price * item.quantity;
             await cart.save()
@@ -37,7 +45,16 @@ const create = async ({ userId, item }) => {
 
 const show = async ({ userId }) => {
     try {
-        const cart = await Cart.findOne({ userId: userId }).populate('items.product');
+        const cart = await Cart.findOne({ userId: userId }).populate({
+            path: 'items',
+            populate: {
+                path: 'product',
+                populate: {
+                    path: 'category'
+                }
+            }
+        });
+
         if (!cart) {
             throw new Error('Cart not found')
         }
@@ -57,7 +74,16 @@ const update = async ({ userId, data }) => {
             throw new Error('User not found')
         }
 
-        const cart = await Cart.findOne({ userId: userId }).populate('items.product');
+        const cart = await Cart.findOne({ userId: userId }).populate({
+            path: 'items',
+            populate: {
+                path: 'product',
+                populate: {
+                    path: 'category'
+                }
+            }
+        });
+        
         if (!cart) {
             throw new Error('Cart not found')
         }

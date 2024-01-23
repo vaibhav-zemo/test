@@ -32,6 +32,8 @@ const categoryDetailedTransformer = {
                     price: product.prices[0].price,
                     rating: product.rating,
                     discount: product.discount,
+                    description: product.description,
+                    flavours: product.flavours,
                 }
             })
         }

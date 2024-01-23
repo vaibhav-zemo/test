@@ -6,6 +6,7 @@ const cartTransformer = {
                     id: item?._id,
                     name: item?.product.name,
                     imageUrl: item?.product?.imageUrl,
+                    category: item?.product?.category?.name,
                     flavour: item?.flavour,
                     quantity: item?.quantity,
                     message: item?.message,
