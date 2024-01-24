@@ -10,7 +10,7 @@ const ProductSchema = new mongoose.Schema({
     prices: [
         {
             weight: { type: String },
-            shopPrice: { type: Number, required: true },
+            shopPrice: { type: Number },
             price: { type: Number, required: true },
         }
     ],
