@@ -4,6 +4,7 @@ const orderDetailedTransformer = {
             id: order?._id,
             items: order?.items.map(item => {
                 return {
+                    productId: item?.product?._id,
                     name: item?.product?.name,
                     imageUrl: item?.product?.imageUrl,
                     quantity: item?.quantity,

@@ -68,4 +68,13 @@ const list = async ({ userId }) => {
     }
 }
 
-module.exports = { create, list, show }
+const pendingList = async ({ orderStatus }) => {
+    try {
+        const orders = await Order.find({ orderStatus }).populate('items.product');
+        return orders;
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
+module.exports = { create, list, show, pendingList }

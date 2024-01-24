@@ -31,4 +31,12 @@ const list = async (req, res) => {
     }
 }
 
-module.exports = { create, show, list }
+const pendingList = async (req, res) => {
+    try {
+        return res.status(200).json(orderListTransformer.transform(await orderService.pendingList({orderStatus: req.query.orderStatus})));
+    } catch (err) {
+        return res.status(500).json({message: err.message});
+    }
+}
+
+module.exports = { create, show, list, pendingList }
