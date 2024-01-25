@@ -34,6 +34,7 @@ const orderTransformer = {
             createdAt: order?.createdAt,
             status: order?.status,
             orderName: order?.items[0]?.product?.name,
+            address: order?.address,
         }
     }
 }

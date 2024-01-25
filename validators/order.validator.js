@@ -25,9 +25,7 @@ const isValidForCreate = Joi.object({
 
 const isValidForUpdate = Joi.object({
     status: Joi.string().valid(PENDING, ACCEPTED, CANCELLED, DELIVERED, DISPATCHED),
-    items: Joi.array().items({
-        rating: Joi.number().min(1).max(5),
-    })
+    paymentId: Joi.objectId(),
 }).min(1);
 
 module.exports = { isValidForCreate, isValidForUpdate }

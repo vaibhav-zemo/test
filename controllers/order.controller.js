@@ -25,18 +25,18 @@ const show = async (req, res) => {
 
 const list = async (req, res) => {
     try {
-        return res.status(200).json(orderListTransformer.transform(await orderService.list({userId: req.query.userId})));
+        return res.status(200).json(orderListTransformer.transform(await orderService.list({userId: req.query.userId, orderStatus: req.query.orderStatus})));
     } catch (err) {
         return res.status(500).json({message: err.message});
     }
 }
 
-const pendingList = async (req, res) => {
+const update = async (req, res) => {
     try {
-        return res.status(200).json(orderListTransformer.transform(await orderService.pendingList({orderStatus: req.query.orderStatus})));
+        return res.status(200).json(orderDetailedTransformer.transform(await orderService.update({orderId: req.params.id, data: req.body})));
     } catch (err) {
         return res.status(500).json({message: err.message});
     }
 }
 
-module.exports = { create, show, list, pendingList }
+module.exports = { create, show, list, update }

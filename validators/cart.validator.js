@@ -16,7 +16,7 @@ const itemSchema = Joi.object({
 
 const isValidForCreate = Joi.object({
     userId: Joi.objectId().required(),
-    item: itemSchema.required(),
+    item: itemSchema,
 })
 
 const querySchema = Joi.object({

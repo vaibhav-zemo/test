@@ -121,4 +121,17 @@ const update = async ({ userId, data }) => {
     }
 }
 
-module.exports = { create, show, update }
+const remove = async ({ userId }) => {
+    try {
+        const cart = await Cart.findOne({ userId: userId });
+        if (!cart) {
+            throw new Error('Cart not found')
+        }
+        await Cart.findByIdAndDelete(cart._id)
+        return { message: 'Cart deleted successfully' }
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+module.exports = { create, show, update, remove }

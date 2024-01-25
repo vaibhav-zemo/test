@@ -2,6 +2,7 @@ const Order = require('../models/order.model');
 const User = require('../models/user.model');
 const Product = require('../models/product.model');
 const Customer = require('../models/customer.model');
+const orderStatus = require('../constants/orderStatus');
 
 const create = async ({ data }) => {
     try {
@@ -49,8 +50,13 @@ const show = async ({ id }) => {
     }
 }
 
-const list = async ({ userId }) => {
+const list = async ({ userId, orderStatus }) => {
     try {
+        if (orderStatus) {
+            const orders = await Order.find({ status: orderStatus }).populate('items.product');
+
+            return orders;
+        }
         const customer = await Customer.findOne({ userId }).populate({
             path: 'orders',
             model: 'Order',
@@ -68,13 +74,16 @@ const list = async ({ userId }) => {
     }
 }
 
-const pendingList = async ({ orderStatus }) => {
+const update = async ({ orderId, data }) => {
     try {
-        const orders = await Order.find({ orderStatus }).populate('items.product');
-        return orders;
-    } catch (error) {
-        throw new Error(error.message)
+        const order = await Order.findByIdAndUpdate(orderId, data, { new: true }).populate('items.product');
+        if (!order) {
+            throw new Error('Order not found');
+        }
+        return order;
+    } catch (err) {
+        throw new Error(err.message)
     }
 }
 
-module.exports = { create, list, show, pendingList }
+module.exports = { create, list, show, update }
