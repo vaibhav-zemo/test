@@ -13,6 +13,7 @@ const favouriteRoute = require('./routers/favourite.router')
 const ratingRoute = require('./routers/rating.router')
 const offerRoute = require('./routers/offer.router')
 const addonRoute = require('./routers/addon.router')
+const paymentRoute = require('./routers/payment.router')
 
 router.use('/auth', authRoute)
 router.use('/user', userRoute)
@@ -27,5 +28,6 @@ router.use('/favourite', favouriteRoute)
 router.use('/rating', ratingRoute)
 router.use('/offer', offerRoute)
 router.use('/addon', addonRoute)
+router.use('/payment', paymentRoute)
 
 module.exports = router

@@ -27,7 +27,7 @@ const create = async ({ orderId, products }) => {
             const searchProduct = await Product.findById(product.productId);
             const ratedUsers = searchProduct.ratedUsers + 1;
             const rating = ((searchProduct.rating * searchProduct.ratedUsers) + product.rating) / ratedUsers;
-            searchProduct.rating = rating;
+            searchProduct.rating = Math.ceil(rating);
             searchProduct.ratedUsers = ratedUsers;
             await searchProduct.save();
         }

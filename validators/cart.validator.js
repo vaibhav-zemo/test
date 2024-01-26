@@ -18,7 +18,7 @@ const isValidForCreate = Joi.object({
 
 const isValidForUpdate = Joi.object({
     item: itemSchema,
-    couponCode: Joi.string(),
+    couponCode: Joi.string().allow(''),
 }).min(1)
 
 module.exports = { isValidForCreate, isValidForUpdate }

@@ -66,6 +66,12 @@ const update = async ({ userId, data }) => {
         }
 
         const { couponCode, item } = data;
+        if(!couponCode){
+            cart.couponCode = null;
+            cart.discountAmount = 0;
+            return { message: 'Coupon removed successfully', remove : true}
+        }
+
         const coupon = await Coupon.findOne({ code: couponCode });
         if (!coupon) {
             throw new Error('Coupon code not found')

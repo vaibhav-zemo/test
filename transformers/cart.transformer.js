@@ -1,5 +1,5 @@
 const cartTransformer = {
-    transform: (cart) => {
+    transform: ({cart, remove, message}) => {
         return {
             items: cart?.items?.map(item => {
                 return {
@@ -18,6 +18,7 @@ const cartTransformer = {
             totalAmount: cart?.totalAmount,
             couponCode: cart?.couponCode,
             discountAmount: cart?.discountAmount,
+            message: remove && message,
         }
     }
 }
