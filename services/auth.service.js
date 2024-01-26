@@ -11,7 +11,7 @@ const create = async ({ phoneNumber, mail }) => {
         }
         const user = await User.findOne({ phoneNumber });
 
-        // _sendOTP(otp, phoneNumber);
+        _sendOTP(otp, phoneNumber);
         return { userId: user?._id, otp };
     } catch (error) {
         throw new Error(error.message);
