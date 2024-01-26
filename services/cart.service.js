@@ -98,7 +98,7 @@ const update = async ({ userId, data }) => {
         
         }
         await cart.save()
-        return cart;
+        return {cart};
     } catch (error) {
         throw new Error(error)
     }
