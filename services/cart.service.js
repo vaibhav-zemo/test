@@ -66,6 +66,15 @@ const update = async ({ userId, data }) => {
         }
 
         const { couponCode, item } = data;
+        if(item){
+            data.item.product = data.item.productId;
+            let amount = data.item.price;
+            cart.items.push(data.item)
+            cart.totalAmount += amount;
+        }
+        else{
+            
+        
         if(!couponCode){
             cart.couponCode = null;
             cart.discountAmount = 0;
@@ -86,13 +95,8 @@ const update = async ({ userId, data }) => {
                 cart.discountAmount = Math.min(Math.ceil(cart.totalAmount * coupon.percentageDiscount / 100), coupon.maxDiscount);
             }
         }
-        else if (item) {
-            data.item.product = data.item.productId;
-            let amount = data.item.price;
-            cart.items.push(data.item)
-            cart.totalAmount += amount;
+        
         }
-
         await cart.save()
         return cart;
     } catch (error) {
