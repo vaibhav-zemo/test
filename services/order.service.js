@@ -32,7 +32,7 @@ const create = async ({ data }) => {
         customer.orders.push(order);
         await customer.save();
 
-        return order;
+        return {id: order._id};
     } catch (error) {
         throw new Error(error.message)
     }

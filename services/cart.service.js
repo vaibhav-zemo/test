@@ -9,33 +9,8 @@ const create = async ({ userId, item }) => {
             throw new Error('User not found')
         }
 
-        const product = await Product.findById(item.productId);
-        if (!product) {
-            throw new Error('Product not found')
-        }
-        
-        let cart = await Cart.findOne({userId}).populate({
-            path: 'items',
-            populate: {
-                path: 'product',
-                populate: {
-                    path: 'category'
-                }
-            }
-        });
-
-        item.product = item.productId;
-        if (cart) {
-            cart.totalAmount += item.price * item.quantity;
-            cart.items.push(item)
-            await cart.save()
-        }
-        else {
-            cart = new Cart({ userId });
-            cart.items.push(item);
-            cart.totalAmount = item.price * item.quantity;
-            await cart.save()
-        }
+        const cart = new Cart({ userId });
+        await cart.save();
 
         return cart;
     } catch (error) {
@@ -45,7 +20,7 @@ const create = async ({ userId, item }) => {
 
 const show = async ({ userId }) => {
     try {
-        const cart = await Cart.findOne({ userId: userId }).populate({
+        const cart = await Cart.findOne({ userId }).populate({
             path: 'items',
             populate: {
                 path: 'product',
@@ -83,50 +58,41 @@ const update = async ({ userId, data }) => {
                 }
             }
         });
-        
+
         if (!cart) {
             throw new Error('Cart not found')
         }
 
-        if (data.item) {
-
-            data.item.product = data.item.productId;
-            let amount = data.item.price * data.item.quantity;
-            cart.items.push(data.item)
-            cart.totalAmount += amount;
-        }
-        else if (data.query) {
-            const itemId = data.query.itemId;
-            const quantity = data.query.quantity;
-
-            const index = cart.items.findIndex(item => item._id == itemId);
-            if (index == -1) {
-                throw new Error('Item not found')
-            }
-            const item = cart.items[index];
-            const prevQuantity = item.quantity;
-            cart.items[index].quantity = quantity;
-            if (quantity == 0) {
-                cart.items.pull(itemId)
-            }
-            const amount = item.price * quantity - item.price * prevQuantity;
-            cart.totalAmount += amount;
-        }
+        data.item.product = data.item.productId;
+        let amount = data.item.price;
+        cart.items.push(data.item)
+        cart.totalAmount += amount;
 
         await cart.save()
         return cart;
-
     } catch (error) {
         throw new Error(error)
     }
 }
 
-const remove = async ({ userId }) => {
+const remove = async ({ userId, itemId }) => {
     try {
         const cart = await Cart.findOne({ userId: userId });
         if (!cart) {
             throw new Error('Cart not found')
         }
+
+        if(itemId){
+            for(let item of cart.items){
+                if(item._id == itemId){
+                    cart.totalAmount -= item.price;
+                    cart.items.pull(item._id);
+                    await cart.save();
+                    return {message: 'Item remove successfully'}
+                }
+            }
+        }
+
         await Cart.findByIdAndDelete(cart._id)
         return { message: 'Cart deleted successfully' }
     } catch (error) {

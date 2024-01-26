@@ -7,7 +7,6 @@ const orderDetailedTransformer = {
                     productId: item?.product?._id,
                     name: item?.product?.name,
                     imageUrl: item?.product?.imageUrl,
-                    quantity: item?.quantity,
                     price: item?.price,
                     weight: item?.weight,
                     message: item?.message,

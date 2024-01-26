@@ -7,11 +7,10 @@ const show = async ({ city, categoryName }) => {
         if (!searchCity) {
             throw new Error('City not found');
         }
-        const category = await Category.findOne({ city: searchCity._id, name: categoryName });
+        const category = await Category.findOne({ city: searchCity._id, name: categoryName }).populate('products');
         if (!category) {
             throw new Error('Category not found');
         }
-
         return category;
     } catch (error) {
         throw new Error(error.message);

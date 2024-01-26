@@ -7,7 +7,6 @@ const isValidForCreate = Joi.object({
     userId: Joi.objectId().required(),
     items: Joi.array().items({
         productId: Joi.objectId().required(),
-        quantity: Joi.number().required(),
         message: Joi.string().allow(''),
         weight: Joi.string(),
         price: Joi.number().required(),

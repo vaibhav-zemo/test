@@ -9,7 +9,7 @@ const create = async (req, res) => {
             return res.status(400).json({message: error.message});
         }
         
-        return res.status(200).json(orderDetailedTransformer.transform(await orderService.create({data: value})));
+        return res.status(200).json(await orderService.create({data: value}));
     } catch (err) {
         return res.status(500).json({message: err.message});
     }
