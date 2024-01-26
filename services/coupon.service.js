@@ -1,10 +1,10 @@
-const CouponCode = require('../models/couponCode.model')
+const Coupon = require('../models/coupon.model')
 const City = require('../models/city.model')
 const dayjs = require('dayjs')
 
 const create = async ({ data, user }) => {
     try {
-        const coupon = await CouponCode.findOne({ code: data.code, city: data.city })
+        const coupon = await Coupon.findOne({ code: data.code, city: data.city })
         if (coupon) {
             throw new Error('Coupon code already exists')
         }
@@ -14,7 +14,7 @@ const create = async ({ data, user }) => {
             throw new Error('City not found')
         }
 
-        const newCoupon = new CouponCode(data)
+        const newCoupon = new Coupon(data)
         // newCoupon.createdBy = user._id
         // newCoupon.updatedBy = user._id
         await newCoupon.save()
@@ -30,7 +30,7 @@ const create = async ({ data, user }) => {
 
 const update = async ({ id, data, user }) => {
     try {
-        const coupon = await CouponCode.findByIdAndUpdate(id, { $set: data }, { new: true })
+        const coupon = await Coupon.findByIdAndUpdate(id, { $set: data }, { new: true })
         if (!coupon) {
             throw new Error('Coupon code not found')
         }
@@ -63,7 +63,7 @@ const list = async ({ city }) => {
 
 const show = async ({ code }) => {
     try {
-        const coupon = await CouponCode.findOne({ name: code });
+        const coupon = await Coupon.findOne({ code: code });
         if (!coupon) {
             throw new Error('Coupon code not found')
         }

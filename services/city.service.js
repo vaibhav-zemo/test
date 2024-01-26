@@ -1,7 +1,7 @@
 const City = require('../models/city.model')
 const Product = require('../models/product.model')
 const Category = require('../models/category.model')
-const CouponCode = require('../models/couponCode.model')
+const Coupon = require('../models/coupon.model')
 const list = async () => {
     try {
         return await City.find();
@@ -35,7 +35,7 @@ const remove = async ({id}) => {
         }
 
         for(let coupon of city.coupons){
-            await CouponCode.findByIdAndDelete(coupon);
+            await Coupon.findByIdAndDelete(coupon);
         }
 
         await City.findByIdAndDelete(id);

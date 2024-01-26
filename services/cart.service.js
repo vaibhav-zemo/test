@@ -1,6 +1,8 @@
 const Cart = require('../models/cart.model')
 const User = require('../models/user.model')
 const Product = require('../models/product.model')
+const Coupon = require('../models/coupon.model')
+const discountType = require('../constants/discountType')
 
 const create = async ({ userId, item }) => {
     try {
@@ -12,7 +14,7 @@ const create = async ({ userId, item }) => {
         const cart = new Cart({ userId });
         await cart.save();
 
-        return cart;
+        return { message: 'Cart created successfully' };
     } catch (error) {
         throw new Error(error)
     }
@@ -63,10 +65,27 @@ const update = async ({ userId, data }) => {
             throw new Error('Cart not found')
         }
 
-        data.item.product = data.item.productId;
-        let amount = data.item.price;
-        cart.items.push(data.item)
-        cart.totalAmount += amount;
+        const { couponCode, item } = data;
+        const coupon = await Coupon.findOne({ code: couponCode });
+        if (!coupon) {
+            throw new Error('Coupon code not found')
+        }
+
+        if (couponCode) {
+            cart.couponCode = coupon.code;
+            if(coupon.discountType == discountType.FLAT){
+                cart.discountAmount = coupon.flatDiscount;
+            }
+            else{
+                cart.discountAmount = Math.min(Math.ceil(cart.totalAmount * coupon.percentageDiscount / 100), coupon.maxDiscount);
+            }
+        }
+        else if (item) {
+            data.item.product = data.item.productId;
+            let amount = data.item.price;
+            cart.items.push(data.item)
+            cart.totalAmount += amount;
+        }
 
         await cart.save()
         return cart;
@@ -82,13 +101,13 @@ const remove = async ({ userId, itemId }) => {
             throw new Error('Cart not found')
         }
 
-        if(itemId){
-            for(let item of cart.items){
-                if(item._id == itemId){
+        if (itemId) {
+            for (let item of cart.items) {
+                if (item._id == itemId) {
                     cart.totalAmount -= item.price;
                     cart.items.pull(item._id);
                     await cart.save();
-                    return {message: 'Item remove successfully'}
+                    return { message: 'Item remove successfully' }
                 }
             }
         }

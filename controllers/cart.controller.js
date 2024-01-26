@@ -16,7 +16,7 @@ const create = async (req, res) => {
             return res.status(400).json({ message: error.message })
         }
 
-        return res.status(200).json(cartTransformer.transform(await cartService.create({ ...value })))
+        return res.status(200).json(await cartService.create({ ...value }))
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }

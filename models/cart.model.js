@@ -13,6 +13,8 @@ const CartSchema = new mongoose.Schema({
         flavour: { type: String },
     }],
     totalAmount: { type: Number, default: 0 },
+    couponCode: { type: String, default: '' },
+    discountAmount: { type: Number, default: 0 },
 }, { timestamps: true })
 
 module.exports = mongoose.model('Cart', CartSchema)

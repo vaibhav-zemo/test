@@ -40,7 +40,7 @@ const list = async (req, res) => {
 
 const show = async (req, res) => {
     try {
-        return res.status(200).json(couponDetailedTransformer.transform(await couponService.show(req.params.code)))
+        return res.status(200).json(couponDetailedTransformer.transform(await couponService.show({ code: req.params.code})))
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }

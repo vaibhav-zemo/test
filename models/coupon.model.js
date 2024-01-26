@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const discountType = require('../constants/discountType')
 
-const CouponCodeSchema = new mongoose.Schema({
+const CouponSchema = new mongoose.Schema({
     discountType: {type: String, enum: [discountType.FLAT, discountType.PERCENTAGE], required: true},
     code: {type: String, required: true},
     flatDiscount: {type: Number},
@@ -14,4 +14,4 @@ const CouponCodeSchema = new mongoose.Schema({
     description: {type: String, default: ''},
 }, {timestamps: true})
 
-module.exports = mongoose.model('CouponCode', CouponCodeSchema)
+module.exports = mongoose.model('Coupon', CouponSchema)

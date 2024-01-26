@@ -16,6 +16,8 @@ const cartTransformer = {
                 }
             }),
             totalAmount: cart?.totalAmount,
+            couponCode: cart?.couponCode,
+            discountAmount: cart?.discountAmount,
         }
     }
 }
