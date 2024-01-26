@@ -36,7 +36,7 @@ const show = async ({ userId }) => {
             throw new Error('Cart not found')
         }
 
-        return cart;
+        return {cart};
     }
     catch (error) {
         throw new Error(error)
