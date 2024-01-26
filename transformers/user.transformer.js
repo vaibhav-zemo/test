@@ -1,3 +1,5 @@
+const dayjs = require('dayjs');
+
 const userTransformer = {
     transform: (data) => {
         return {
@@ -26,6 +28,7 @@ const getUserTransformer = {
                 }
             }),
             role: user?.role,
+            dob: dayjs(user?.dob).format('DD/MM/YYYY'),
         }
     }
 }

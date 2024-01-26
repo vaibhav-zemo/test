@@ -3,6 +3,7 @@ const Customer = require('../models/customer.model');
 const Merchant = require('../models/merchant.model');
 const { MERCHANT, CUSTOMER } = require('../constants/userRole');
 const jwt = require('jsonwebtoken');
+const dayjs = require('dayjs')
 
 const create = async ({ name, email, phoneNumber, role, shopName }) => {
     try {
@@ -30,6 +31,11 @@ const create = async ({ name, email, phoneNumber, role, shopName }) => {
 
 const update = async ({ data, userId }) => {
     try {
+        let {dob} = data;
+        if(dob){
+            dob = dayjs(dob).toDate();
+            data.dob = dob;
+        }
         const userToUpdate = await User.findByIdAndUpdate(
             userId,
             { $set: data },

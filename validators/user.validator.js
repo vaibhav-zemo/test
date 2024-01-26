@@ -15,7 +15,8 @@ const isValidForUpdate = Joi.object({
     phoneNumber: Joi.string().length(10).pattern(/^[0-9]+$/),
     email: Joi.string().email(),
     gender: Joi.string().valid(FEMALE, MALE, OTHER),
-}).or('userName', 'phoneNumber', 'email', 'gender').min(1);
+    dob: Joi.string(),
+}).or('userName', 'phoneNumber', 'email', 'gender', 'dob').min(1);
 
 module.exports = {
     isValidForCreate,
