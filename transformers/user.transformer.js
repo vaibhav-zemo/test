@@ -28,7 +28,7 @@ const getUserTransformer = {
                 }
             }),
             role: user?.role,
-            dob: dayjs(user?.dob).format('DD/MM/YYYY'),
+            dob: user?.dob && dayjs(user?.dob).format('DD/MM/YYYY'),
         }
     }
 }

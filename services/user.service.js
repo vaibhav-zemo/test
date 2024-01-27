@@ -55,9 +55,19 @@ const update = async ({ data, userId }) => {
 
 const remove = async ({ userId }) => {
     try {
-        const userToRemove = await User.findByIdAndDelete(userId);
-        if (!userToRemove) throw new Error('User not found');
+        const user = await User.findById(userId);
+        if (!user) throw new Error('User not found');
 
+        if(user.role === MERCHANT){
+            const merchant = await Merchant.findOne({userId});
+            await Merchant.findByIdAndDelete(merchant._id);
+        }
+        else if(user.role === CUSTOMER){
+            const customer = await Customer.findOne({userId});
+            await Customer.findByIdAndDelete(customer._id);
+        }
+
+        await User.findByIdAndDelete(userId);
         return { message: 'User deleted successfully' };
     }
     catch (error) {

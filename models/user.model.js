@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
     address: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }],
     gender: { type: String, enum: [userGender.MALE, userGender.FEMALE, userGender.OTHER] },
     cartId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
-    dob: { type: Date },
+    dob: { type: Date, default: null },
 }, { timestamps: true })
 
 module.exports = mongoose.model('User', UserSchema)
