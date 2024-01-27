@@ -1,16 +1,16 @@
 const couponDetailedTransformer = {
     transform: (coupon) => {
         return {
-            id: coupon._id,
-            code: coupon.code,
-            discountType: coupon.discountType,
+            id: coupon?._id,
+            code: coupon?.code,
+            discountType: coupon?.discountType,
             flatDiscount: coupon?.flatDiscount,
             percentageDiscount: coupon?.percentageDiscount,
-            maxDiscount: coupon.maxDiscount,
-            expiryDate: coupon.expiryDate,
-            isActive: coupon.isActive,
-            createdAt: coupon.createdAt,
-            updatedAt: coupon.updatedAt
+            maxDiscount: coupon?.maxDiscount,
+            expiryDate: coupon?.expiryDate,
+            isActive: coupon?.isActive,
+            createdAt: coupon?.createdAt,
+            updatedAt: coupon?.updatedAt
         }
     }
 }
@@ -18,13 +18,13 @@ const couponDetailedTransformer = {
 const couponTransformer = {
     transform: (coupon) => {
         return {
-            id: coupon._id,
-            code: coupon.code,
-            discountType: coupon.discountType,
+            id: coupon?._id,
+            code: coupon?.code,
+            discountType: coupon?.discountType,
             flatDiscount: coupon?.flatDiscount,
             percentageDiscount: coupon?.percentageDiscount,
-            maxDiscount: coupon.maxDiscount,
-            description: coupon.description,
+            maxDiscount: coupon?.maxDiscount,
+            description: coupon?.description,
         }
     }
 }

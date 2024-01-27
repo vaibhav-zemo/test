@@ -12,6 +12,7 @@ const CouponSchema = new mongoose.Schema({
     createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     updatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     description: {type: String, default: ''},
+    city: {type: mongoose.Schema.Types.ObjectId, ref: 'City', required: true}
 }, {timestamps: true})
 
 module.exports = mongoose.model('Coupon', CouponSchema)

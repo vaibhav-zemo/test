@@ -46,4 +46,13 @@ const show = async (req, res) => {
     }
 }
 
-module.exports = {create, update, list, show}
+const remove = async(req, res) => {
+    try{
+        return res.status(200).json(await couponService.remove({id: req.params.id}))
+    }
+    catch(err){
+        return res.status(500).json({message: err.message})
+    }
+}
+
+module.exports = {create, update, list, show, remove}

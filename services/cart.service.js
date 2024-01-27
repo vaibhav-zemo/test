@@ -66,6 +66,7 @@ const update = async ({ userId, data }) => {
         }
 
         const { couponCode, item } = data;
+
         if (item) {
             data.item.product = data.item.productId;
             let amount = data.item.price;
@@ -74,10 +75,10 @@ const update = async ({ userId, data }) => {
         }
         else {
 
-
             if (!couponCode) {
-                cart.couponCode = null;
+                cart.couponCode = '';
                 cart.discountAmount = 0;
+                await cart.save();
                 return { message: 'Coupon removed successfully', remove: true }
             }
 

@@ -4,16 +4,17 @@ const dayjs = require('dayjs')
 
 const create = async ({ data, user }) => {
     try {
-        const coupon = await Coupon.findOne({ code: data.code, city: data.city })
-        if (coupon) {
-            throw new Error('Coupon code already exists')
-        }
-
         const city = await City.findOne({ name: data.city })
         if (!city) {
             throw new Error('City not found')
         }
 
+        const coupon = await Coupon.findOne({ code: data.code, city: city._id })
+        if (coupon) {
+            throw new Error('Coupon code already exists')
+        }
+
+        data.city = city._id;
         const newCoupon = new Coupon(data)
         // newCoupon.createdBy = user._id
         // newCoupon.updatedBy = user._id
@@ -24,7 +25,7 @@ const create = async ({ data, user }) => {
 
         return newCoupon
     } catch (error) {
-        throw new Error(error)
+        throw new Error(error.message)
     }
 }
 
@@ -82,4 +83,17 @@ const show = async ({ code }) => {
     }
 }
 
-module.exports = { create, update, list, show }
+const remove = async ({ id }) => {
+    try {
+        const coupon = await Coupon.findByIdAndDelete(id)
+        if (!coupon) {
+            throw new Error('Coupon code not found')
+        }
+
+        return { message: 'Coupon code deleted successfully' }
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+module.exports = { create, update, list, show, remove }
