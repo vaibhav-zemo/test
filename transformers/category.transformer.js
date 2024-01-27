@@ -35,6 +35,8 @@ const categoryDetailedTransformer = {
                     discount: product?.discount,
                     description: product?.description,
                     flavours: product?.flavours,
+                    note: product?.note,
+                    serving: product?.serving,
                 }
             })
         }

@@ -17,6 +17,8 @@ const ProductSchema = new mongoose.Schema({
     flavours: [{ type: String }],
     city: { type: mongoose.Schema.Types.ObjectId, ref: 'City' },
     discount: { type: Number },
+    serving: {type: String, default: ''},
+    note: {type: String, default: ''},
 }, { timestamps: true })
 
 module.exports = mongoose.model('Product', ProductSchema)

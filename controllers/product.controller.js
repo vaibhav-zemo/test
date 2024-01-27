@@ -14,7 +14,7 @@ const create = async (req, res) => {
 
 const list = async (req, res) => {
     try {
-        return res.status(200).json(productListTransformer.transform(await productService.list({city: req.query.city})));
+        return res.status(200).json(productListTransformer.transform(await productService.list({ city: req.query.city })));
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -24,7 +24,7 @@ const show = async (req, res) => {
     try {
         return res.status(200).json(productTransformer.transform(await productService.show({ id: req.params.id })));
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error' })
+        res.status(500).json({ message: error.message })
     }
 }
 
@@ -37,7 +37,7 @@ const remove = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    try{
+    try {
         const { error, value } = isValidForUpdate.validate(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
@@ -48,4 +48,13 @@ const update = async (req, res) => {
     }
 }
 
-module.exports = { create, list, show, remove, update }
+const bulkUpload = async (req, res) => {
+    try {
+        return res.status(200).json(await productService.bulkCreate({ data: req.body }));
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+module.exports = { create, list, show, remove, update, bulkUpload }

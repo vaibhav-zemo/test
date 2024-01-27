@@ -7,5 +7,6 @@ router.get('/', productController.list)
 router.get('/:id', productController.show)
 router.delete('/:id', productController.remove)
 router.put('/:id', productController.update)
+router.post('/bulkUpload', productController.bulkUpload)
 
 module.exports = router;

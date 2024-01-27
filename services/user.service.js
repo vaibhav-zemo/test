@@ -10,7 +10,9 @@ const create = async ({ name, email, phoneNumber, role, shopName }) => {
         let user = await User.findOne({ phoneNumber });
 
         if (!user) {
-            
+            user = await User.findOne({ email });
+            if(user) throw new Error('Email already exists');
+
             const newUser = new User({
                 userName: name,
                 email: email,
@@ -26,7 +28,7 @@ const create = async ({ name, email, phoneNumber, role, shopName }) => {
         return { persona, token };
 
     } catch (error) {
-        throw new Error(error);
+        throw new Error(error.message);
     }
 }
 
