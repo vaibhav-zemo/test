@@ -10,6 +10,7 @@ const create = async ({ name, email, phoneNumber, role, shopName }) => {
         let user = await User.findOne({ phoneNumber });
 
         if (!user) {
+            
             const newUser = new User({
                 userName: name,
                 email: email,
