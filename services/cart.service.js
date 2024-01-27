@@ -31,7 +31,7 @@ const show = async ({ userId }) => {
                 }
             }
         });
-
+        
         if (!cart) {
             throw new Error('Cart not found')
         }
@@ -68,7 +68,8 @@ const update = async ({ userId, data }) => {
         const { couponCode, item } = data;
 
         if (item) {
-            data.item.product = data.item.productId;
+            const product = await Product.findById(item.productId);
+            data.item.product = product;
             let amount = data.item.price;
             cart.items.push(data.item)
             cart.totalAmount += amount;
@@ -98,6 +99,7 @@ const update = async ({ userId, data }) => {
             }
 
         }
+        
         await cart.save()
         return { cart };
     } catch (error) {
