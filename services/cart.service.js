@@ -36,7 +36,7 @@ const show = async ({ userId }) => {
             throw new Error('Cart not found')
         }
 
-        return cart;
+        return { cart };
     }
     catch (error) {
         throw new Error(error)
@@ -66,35 +66,39 @@ const update = async ({ userId, data }) => {
         }
 
         const { couponCode, item } = data;
-        if(!couponCode){
-            cart.couponCode = null;
-            cart.discountAmount = 0;
-            return { message: 'Coupon removed successfully', remove : true}
-        }
-
-        const coupon = await Coupon.findOne({ code: couponCode });
-        if (!coupon) {
-            throw new Error('Coupon code not found')
-        }
-
-        if (couponCode) {
-            cart.couponCode = coupon.code;
-            if(coupon.discountType == discountType.FLAT){
-                cart.discountAmount = coupon.flatDiscount;
-            }
-            else{
-                cart.discountAmount = Math.min(Math.ceil(cart.totalAmount * coupon.percentageDiscount / 100), coupon.maxDiscount);
-            }
-        }
-        else if (item) {
+        if (item) {
             data.item.product = data.item.productId;
             let amount = data.item.price;
             cart.items.push(data.item)
             cart.totalAmount += amount;
         }
+        else {
 
+
+            if (!couponCode) {
+                cart.couponCode = null;
+                cart.discountAmount = 0;
+                return { message: 'Coupon removed successfully', remove: true }
+            }
+
+            const coupon = await Coupon.findOne({ code: couponCode });
+            if (!coupon) {
+                throw new Error('Coupon code not found')
+            }
+
+            if (couponCode) {
+                cart.couponCode = coupon.code;
+                if (coupon.discountType == discountType.FLAT) {
+                    cart.discountAmount = coupon.flatDiscount;
+                }
+                else {
+                    cart.discountAmount = Math.min(Math.ceil(cart.totalAmount * coupon.percentageDiscount / 100), coupon.maxDiscount);
+                }
+            }
+
+        }
         await cart.save()
-        return cart;
+        return { cart };
     } catch (error) {
         throw new Error(error)
     }
