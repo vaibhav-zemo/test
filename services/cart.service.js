@@ -75,8 +75,8 @@ const update = async ({ userId, data }) => {
             cart.totalAmount += amount;
 
             await cart.save()
-            const item = cart.items[cart.items.length - 1];
-            return { item }
+            const newItem = cart.items[cart.items.length - 1];
+            return { id: newItem._id }
         }
         else {
 
