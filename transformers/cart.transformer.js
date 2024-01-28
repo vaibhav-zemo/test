@@ -4,6 +4,7 @@ const cartTransformer = {
             items: cart?.items?.map(item => {
                 return {
                     id: item?._id,
+                    productId: item.product._id,
                     name: item?.product?.name,
                     imageUrl: item?.product?.imageUrl,
                     category: item?.product?.category?.name,
