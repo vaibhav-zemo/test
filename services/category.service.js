@@ -111,7 +111,7 @@ const bulkUpload = async ({body}) => {
             const newCategory = new Category(data)
             await newCategory.save()
 
-            searchCity.categories.push(category._id)
+            searchCity.categories.push(newCategory._id)
             await searchCity.save()
         }
 

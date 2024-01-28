@@ -73,6 +73,10 @@ const update = async ({ userId, data }) => {
             let amount = data.item.price;
             cart.items.push(data.item)
             cart.totalAmount += amount;
+
+            await cart.save()
+            const item = cart.items[cart.items.length - 1];
+            return { item }
         }
         else {
 
@@ -97,11 +101,10 @@ const update = async ({ userId, data }) => {
                     cart.discountAmount = Math.min(Math.ceil(cart.totalAmount * coupon.percentageDiscount / 100), coupon.maxDiscount);
                 }
             }
-
+            await cart.save();
+            return { message: 'Coupon applied successfully', remove: false }
         }
-        
-        await cart.save()
-        return { cart };
+                
     } catch (error) {
         throw new Error(error)
     }
