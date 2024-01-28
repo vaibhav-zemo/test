@@ -93,4 +93,32 @@ const show = async ({ id }) => {
     }
 }
 
-module.exports = { list, create, remove, update, show }
+const bulkUpload = async ({body}) => {
+    try {
+        for(let category of body){
+            const searchCity = await City.findOne({name: category.city})
+            if(!searchCity) throw new Error('City not found')
+        }
+
+        for(let category of body){
+            const searchCity = await City.findOne({name: category.city})
+            const data = {
+                name: category.name,
+                imageUrl: category.imageUrl,
+                price: category.price,
+                city: searchCity._id
+            }
+            const newCategory = new Category(data)
+            await newCategory.save()
+
+            searchCity.categories.push(category._id)
+            await searchCity.save()
+        }
+
+        return { message: "Categories uploaded successfully" }
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
+module.exports = { list, create, remove, update, show, bulkUpload }

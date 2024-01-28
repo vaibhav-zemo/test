@@ -121,7 +121,7 @@ const bulkCreate = async ({ data }) => {
         }
 
         for(let product of data) {
-            const { city, category, name, description, imageUrl, price, shopPrice, weight, flavours, discount } = product;
+            const { city, category, name, description, imageUrl, price, shopPrice, weight, flavours, discount, note, serving } = product;
 
             const searchCity = await City.findOne({name: city});
             const searchCategory = await Category.findOne({name: category});
@@ -147,9 +147,11 @@ const bulkCreate = async ({ data }) => {
                         shopPrice: shopPrice,
                         price: price
                     }],
-                    flavours: flavours.split(' '),
+                    flavours: flavours?.split(' '),
                     city: searchCity,
-                    discount: discount                
+                    discount: discount,
+                    note: note,
+                    serving: serving          
                 });
                 await newProduct.save();
 

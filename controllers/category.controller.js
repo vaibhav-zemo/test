@@ -55,4 +55,13 @@ const show = async (req, res) => {
     }
 }
 
-module.exports = { create, remove, update, list, show }
+const bulkUpload = async (req, res) => {
+    try {
+        return res.status(201).json(await categoryService.bulkUpload({ body: req.body }))
+    }
+    catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports = { create, remove, update, list, show, bulkUpload }
