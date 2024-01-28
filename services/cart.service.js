@@ -102,7 +102,7 @@ const update = async ({ userId, data }) => {
                 }
             }
             await cart.save();
-            return { message: 'Coupon applied successfully', remove: false }
+            return { message: 'Coupon applied successfully' }
         }
                 
     } catch (error) {
