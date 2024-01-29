@@ -6,7 +6,7 @@ const sendOtp = (otp, mail) => {
         {
             from: 'support@cakelaya.com',
             to: mail,
-            subject: 'One-Time Password (OTP) Verification for Cakelaya',
+            subject: 'One-Time Password (OTP) Verification for Cakeलाया ?',
             html: htmlString,
         },
         (err, info) => {
