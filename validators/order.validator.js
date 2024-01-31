@@ -15,9 +15,9 @@ const isValidForCreate = Joi.object({
         flavour: Joi.string().allow(''),
     }).required(),
     totalAmount: Joi.number().required(),
-    couponCode: Joi.string().required(),
+    couponCode: Joi.string(),
     address: Joi.string().required(),
-    paymentId: Joi.objectId().required(),
+    paymentId: Joi.objectId(),
     note: Joi.string().allow(''),
     phoneNumber: Joi.string().required(),
 })
