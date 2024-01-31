@@ -13,9 +13,9 @@ const create = async ({ data }) => {
 
         const productIds = data.items.map(item => item.productId);
         const products = await Product.find({ _id: { $in: productIds } });
-        if (products.length !== productIds.length) {
-            throw new Error('Product not found');
-        }
+      //  if (products.length !== productIds.length) {
+      //      throw new Error('Product not found');
+      //  }
 
         for (let item of data.items) {
             item.product = item.productId;
