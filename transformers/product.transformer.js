@@ -5,6 +5,8 @@ const productTransformer = {
             name: product?.name,
             image: product?.imageUrl,
             description: product?.description,
+            note: product?.note,
+            serving: product?.serving,
             rating: product?.rating,
             flavour: product?.flavours,
             discount: product?.discount,
@@ -12,6 +14,7 @@ const productTransformer = {
                 return {
                     weight: price?.weight,
                     price: price?.price,
+                    discountedPrice: Math.ceil(prices?.price * 1.25)
                 }
             })
         }
