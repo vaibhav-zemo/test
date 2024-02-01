@@ -1,5 +1,5 @@
 module.exports = {
-    BIRTHDAY: 'Birthday',
-    ANNIVERSARY: 'Anniversary',
-    OTHER: 'Other',
+    BIRTHDAY: 'birthday',
+    ANNIVERSARY: 'anniversary',
+    OTHER: 'other',
 }
