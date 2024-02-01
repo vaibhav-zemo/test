@@ -14,7 +14,7 @@ const productTransformer = {
                 return {
                     weight: price?.weight,
                     price: price?.price,
-                    discountedPrice: Math.ceil(prices?.price * 1.25)
+                    discountedPrice: Math.ceil(price?.price * 1.25)
                 }
             })
         }
