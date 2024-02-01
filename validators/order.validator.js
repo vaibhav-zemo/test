@@ -11,7 +11,7 @@ const isValidForCreate = Joi.object({
         weight: Joi.string().allow(''),
         price: Joi.number().required(),
         discount: Joi.number(),
-        occasion: Joi.string().valid(BIRTHDAY, ANNIVERSARY, OTHER).lowercase(),
+        occasion: Joi.string().valid(BIRTHDAY, ANNIVERSARY, OTHER).lowercase().allow(''),
         flavour: Joi.string().allow(''),
     }).required(),
     totalAmount: Joi.number().required(),
