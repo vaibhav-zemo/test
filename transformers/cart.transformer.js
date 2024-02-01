@@ -13,7 +13,7 @@ const cartTransformer = {
                     weight: item?.weight,
                     price: item?.price,
                     discount: item?.discount,
-                    occasion: item?.occasion,
+                    occasion: item?.occasion?.charAt(0).toUpperCase() + item?.occasion?.slice(1),
                 }
             }),
             totalAmount: cart?.totalAmount,

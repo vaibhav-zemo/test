@@ -3,6 +3,7 @@ const User = require('../models/user.model');
 const Product = require('../models/product.model');
 const Customer = require('../models/customer.model');
 const orderStatus = require('../constants/orderStatus');
+const Category = require('../models/category.model');
 
 const create = async ({ data }) => {
     try {
@@ -11,18 +12,31 @@ const create = async ({ data }) => {
             throw new Error('User not found');
         }
 
-        const productIds = data.items.map(item => item.productId);
-        const products = await Product.find({ _id: { $in: productIds } });
-      //  if (products.length !== productIds.length) {
-      //      throw new Error('Product not found');
-      //  }
-
         for (let item of data.items) {
             item.product = item.productId;
         }
 
         const order = new Order(data);
-        (await order.save()).populate('items.product');
+        await order.save();
+        await order.populate({
+            path: 'items.product',
+            model: 'Product',
+            populate: {
+                path: 'category',
+                model: 'Category'
+            }
+        })
+
+        for (let item of order.items) {
+            const category = item.product.category;
+            if (category.name != 'Addon') {
+                order.orderName = category.name;
+                await order.save()
+                break;
+            }
+        }
+        
+        await order.save()
 
         const customer = await Customer.findOne({ userId: user._id });
         if (!customer) {
@@ -32,7 +46,7 @@ const create = async ({ data }) => {
         customer.orders.push(order);
         await customer.save();
 
-        return {id: order._id};
+        return { id: order._id };
     } catch (error) {
         throw new Error(error.message)
     }
@@ -63,7 +77,8 @@ const list = async ({ userId, orderStatus }) => {
             populate: {
                 path: 'items.product'
             }
-        });
+        }).sort({ createdAt: -1 });
+
         if (!customer) {
             throw new Error('Customer not found');
         }

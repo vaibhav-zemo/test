@@ -10,7 +10,7 @@ const orderDetailedTransformer = {
                     price: item?.price,
                     weight: item?.weight,
                     message: item?.message,
-                    occasion: item?.occasion,
+                    occasion:  item?.occasion?.charAt(0).toUpperCase() + item?.occasion?.slice(1),
                     flavour: item?.flavour,
                     rating: item?.rating,
                     discount: item?.discount,
@@ -19,7 +19,7 @@ const orderDetailedTransformer = {
             createdAt: order?.createdAt,
             totalAmount: order?.totalAmount,
             address: order?.address,
-            status: order?.status,
+            status: order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1),
             note: order?.note,
             couponCode: order?.couponCode,
         }
@@ -31,8 +31,8 @@ const orderTransformer = {
         return {
             id: order?._id,
             createdAt: order?.createdAt,
-            status: order?.status,
-            orderName: order?.items[0]?.product?.name,
+            status: order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1),
+            orderName: order?.orderName,
             address: order?.address,
         }
     }

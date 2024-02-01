@@ -21,6 +21,7 @@ const OrderSchema = new mongoose.Schema({
     couponCode: {type: String},
     paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Payment' },
     phoneNumber: { type: String, required: true },
+    orderName: { type: String },
 }, { timestamps: true })
 
 module.exports = mongoose.model('Order', OrderSchema)
