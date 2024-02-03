@@ -78,7 +78,7 @@ const create = async ({ userName, email, city, phoneNumber, file }) => {
 
         const dateTime = _giveCurrentDateTime();
 
-        const storageRef = ref(storage, `files/${file.originalname + "" + dateTime}`);
+        const storageRef = ref(storage, `License/${file.originalname + "" + dateTime}`);
         const metadata = {
             contentType: file.mimetype
         };

@@ -1,7 +1,7 @@
 const Offer = require('../models/offer.model');
 const City = require('../models/city.model');
 
-const create = async ({data}) => {
+const create = async ({ data }) => {
     try {
         const city = await City.findOne({ name: data.city });
         if (!city) {
@@ -22,7 +22,7 @@ const create = async ({data}) => {
     }
 }
 
-const list = async ({city}) => {
+const list = async ({ city }) => {
     try {
         const searchCity = await City.findOne({ name: city });
         if (!searchCity) {
@@ -36,7 +36,35 @@ const list = async ({city}) => {
     }
 }
 
+const bulkUpload = async ({ data }) => {
+    try {
+        for (let offer of data) {
+            const city = await City.findOne({ name: offer.city });
+            if (!city) {
+                throw new Error('City not found');
+            }
+        }
+
+        for (let offer of data) {
+            const city = await City.findOne({ name: offer.city });
+            const newOffer = new Offer({
+                title: offer.title,
+                description: offer.description,
+                imageUrl: offer.imageUrl,
+                city: city._id,
+            });
+            await newOffer.save();
+        }
+
+        return {message: 'Offers created'}; 
+    }
+    catch (error) {
+        throw new Error(error.message);
+    }
+}
+
 module.exports = {
     create,
     list,
+    bulkUpload
 }
