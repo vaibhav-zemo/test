@@ -1,6 +1,7 @@
 const Product = require('../models/product.model.js')
 const City = require('../models/city.model.js')
 const Category = require('../models/category.model.js')
+const csv = require('csvtojson')
 
 const create = async ({ data }) => {
     try {
@@ -59,7 +60,7 @@ const show = async ({ id }) => {
     try {
         const product = await Product.findById(id)
         if (!product) throw new Error('Product not found')
-        
+
         return product
     } catch (error) {
         throw new Error(error.message)
@@ -108,61 +109,69 @@ const update = async ({ id, data }) => {
     }
 }
 
-const bulkCreate = async ({ data }) => {
+const bulkCreate = async ({ file }) => {
     try {
-        for (let product of data) {
-            const { city, category } = product;
+        csv()
+            .fromString(file.buffer.toString())
+            .then(async (json) => {
+                for (let product of json) {
+                    const { city, category } = product;
+                    const searchCity = await City.findOne({ name: city });
+                    if (!searchCity) throw new Error('City not found')
 
-            const searchCity = await City.findOne({name: city});
-            if (!searchCity) throw new Error('City not found')
-
-            const searchCategory = await Category.findOne({name: category, city: searchCity});
-            if (!searchCategory) throw new Error('Category not found')
-        }
-
-        for(let product of data) {
-            const { city, category, name, description, imageUrl, price, shopPrice, weight, flavours, discount, note, serving } = product;
-
-            const searchCity = await City.findOne({name: city});
-            const searchCategory = await Category.findOne({name: category});
-
-            const searchProduct = await Product.findOne({name: name, city: searchCity, category: searchCategory, imageUrl: imageUrl});
-            if (searchProduct){
-                const priceData = {
-                    weight: weight,
-                    shopPrice: shopPrice,
-                    price: price
+                    const searchCategory = await Category.findOne({ name: category, city: searchCity });
+                    if (!searchCategory) throw new Error('Category not found')
                 }
-                searchProduct.prices.push(priceData);
-                await searchProduct.save();
-            }
-            else{
-                const newProduct = new Product({
-                    name: name,
-                    description: description,
-                    imageUrl: imageUrl,
-                    category: searchCategory,
-                    prices: [{
-                        weight: weight,
-                        shopPrice: shopPrice,
-                        price: price
-                    }],
-                    flavours: flavours?.split(' '),
-                    city: searchCity,
-                    discount: discount,
-                    note: note,
-                    serving: serving          
-                });
-                await newProduct.save();
 
-                searchCity.products.push(newProduct);
-                await searchCity.save();
+                for (let product of json) {
+                    const { city, category, name, description, imageUrl, price, shopPrice, weight, flavours, discount, note, serving } = product;
 
-                searchCategory.products.push(newProduct);
-                await searchCategory.save();
-            }
-        }
-        return { message: "Products added successfully" }
+                    const searchCity = await City.findOne({ name: city });
+                    const searchCategory = await Category.findOne({ name: category });
+
+                    const searchProduct = await Product.findOne({ name: name, city: searchCity, category: searchCategory, imageUrl: imageUrl });
+                    if (searchProduct) {
+                        const priceData = {
+                            weight: weight,
+                            shopPrice: shopPrice,
+                            price: price
+                        }
+                        searchProduct.prices.push(priceData);
+                        await searchProduct.save();
+                    }
+                    else {
+                        const newProduct = new Product({
+                            name: name,
+                            description: description,
+                            imageUrl: imageUrl,
+                            category: searchCategory,
+                            prices: [{
+                                weight: weight,
+                                shopPrice: shopPrice,
+                                price: price
+                            }],
+                            flavours: flavours?.split(', '),
+                            city: searchCity,
+                            discount: discount,
+                            note: note,
+                            serving: serving
+                        });
+                        await newProduct.save();
+
+                        searchCity.products.push(newProduct);
+                        await searchCity.save();
+
+                        searchCategory.products.push(newProduct);
+                        await searchCategory.save();
+                    }
+                }
+
+            })
+            .catch((err) => {
+                throw new Error(err.message)
+            })
+
+        return { message: 'Products added successfully' }
     }
     catch (err) {
         throw new Error(err.message)

@@ -50,7 +50,7 @@ const update = async (req, res) => {
 
 const bulkUpload = async (req, res) => {
     try {
-        return res.status(200).json(await productService.bulkCreate({ data: req.body }));
+        return res.status(200).json(await productService.bulkCreate({ file: req.file}));
     }
     catch (error) {
         res.status(500).json({ message: error.message })

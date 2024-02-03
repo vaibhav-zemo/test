@@ -1,11 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const categoryController = require('../controllers/category.controller')
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/', categoryController.list);
 router.get('/:id', categoryController.show);
 router.post('/', categoryController.create);
-router.post('/bulkUpload', categoryController.bulkUpload);
+router.post('/bulkUpload', upload.single("file"), categoryController.bulkUpload);
 router.put('/:id', categoryController.update);
 router.delete('/:id', categoryController.remove);
 

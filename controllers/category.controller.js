@@ -57,7 +57,7 @@ const show = async (req, res) => {
 
 const bulkUpload = async (req, res) => {
     try {
-        return res.status(201).json(await categoryService.bulkUpload({ body: req.body }))
+        return res.status(201).json(await categoryService.bulkUpload({ file: req.file }))
     }
     catch (err) {
         return res.status(500).json({ message: err.message })

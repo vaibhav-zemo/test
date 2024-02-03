@@ -1,5 +1,6 @@
 const Offer = require('../models/offer.model');
 const City = require('../models/city.model');
+const csv = require('csvtojson');
 
 const create = async ({ data }) => {
     try {
@@ -36,27 +37,34 @@ const list = async ({ city }) => {
     }
 }
 
-const bulkUpload = async ({ data }) => {
+const bulkUpload = async ({ file }) => {
     try {
-        for (let offer of data) {
-            const city = await City.findOne({ name: offer.city });
-            if (!city) {
-                throw new Error('City not found');
-            }
-        }
+        csv()
+            .fromString(file.buffer.toString())
+            .then(async (json) => {
+                for (let offer of json) {
+                    const city = await City.findOne({ name: offer.city });
+                    if (!city) {
+                        throw new Error('City not found');
+                    }
+                }
 
-        for (let offer of data) {
-            const city = await City.findOne({ name: offer.city });
-            const newOffer = new Offer({
-                title: offer.title,
-                description: offer.description,
-                imageUrl: offer.imageUrl,
-                city: city._id,
+                for (let offer of json) {
+                    const city = await City.findOne({ name: offer.city });
+                    const newOffer = new Offer({
+                        title: offer.title,
+                        description: offer.description,
+                        imageUrl: offer.imageUrl,
+                        city: city._id,
+                    });
+                    await newOffer.save();
+                }
+            })
+            .catch((err) => {
+                throw new Error(err.message);
             });
-            await newOffer.save();
-        }
 
-        return {message: 'Offers created'}; 
+        return { message: 'Offers created' };
     }
     catch (error) {
         throw new Error(error.message);

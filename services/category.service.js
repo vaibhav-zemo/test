@@ -1,10 +1,11 @@
 const Category = require('../models/category.model');
 const City = require('../models/city.model');
+const csv = require('csvtojson');
 
-const list = async ({city}) => {
+const list = async ({ city }) => {
     try {
-        const searchCity = await City.findOne({name: city}).populate('categories')
-        if(!searchCity) throw new Error('City not found')
+        const searchCity = await City.findOne({ name: city }).populate('categories')
+        if (!searchCity) throw new Error('City not found')
         return searchCity.categories;
     }
     catch (err) {
@@ -43,7 +44,7 @@ const remove = async ({ id }) => {
         const category = await Category.findById(id)
         if (!category) {
             throw new Error("Category not found")
-        
+
         }
 
         const city = await City.findById(category.city)
@@ -93,29 +94,39 @@ const show = async ({ id }) => {
     }
 }
 
-const bulkUpload = async ({body}) => {
+const bulkUpload = async ({ file }) => {
     try {
-        for(let category of body){
-            const searchCity = await City.findOne({name: category.city})
-            if(!searchCity) throw new Error('City not found')
-        }
+        csv()
+            .fromString(file.buffer.toString())
+            .then(async (json) => {
+                for (let category of json) {
+                    const searchCity = await City.findOne({ name: category.city })
+                    if (!searchCity) throw new Error('City not found')
+                }
 
-        for(let category of body){
-            const searchCity = await City.findOne({name: category.city})
-            const data = {
-                name: category.name,
-                imageUrl: category.imageUrl,
-                price: category.price,
-                city: searchCity._id
-            }
-            const newCategory = new Category(data)
-            await newCategory.save()
+                for (let category of json) {
+                    const searchCity = await City.findOne({ name: category.city })
+                    const data = {
+                        name: category.name,
+                        imageUrl: category.imageUrl,
+                        price: category.price,
+                        city: searchCity._id
+                    }
 
-            searchCity.categories.push(newCategory._id)
-            await searchCity.save()
-        }
+                    const newCategory = new Category(data)
+                    await newCategory.save()
+
+                    searchCity.categories.push(newCategory._id)
+                    await searchCity.save()
+                }
+
+            })
+            .catch((err) => {
+                throw new Error(err.message)
+            })
 
         return { message: "Categories uploaded successfully" }
+    
     } catch (error) {
         throw new Error(error.message)
     }

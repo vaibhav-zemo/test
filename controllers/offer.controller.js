@@ -24,7 +24,7 @@ const list = async (req, res) => {
 
 const bulkUpload = async (req, res) => {
     try {
-        return res.status(200).json(await offerService.bulkUpload({ data: req.body }))
+        return res.status(200).json(await offerService.bulkUpload({ file: req.file}))
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
