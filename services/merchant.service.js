@@ -9,9 +9,9 @@ initializeApp(config.firebaseConfig)
 const { getStorage, ref, uploadBytesResumable, getDownloadURL } = require('firebase/storage')
 const storage = getStorage();
 
-const show = async ({ userId }) => {
+const show = async ({ merchantId }) => {
     try {
-        const merchant = await Merchant.findOne({ userId: userId });
+        const merchant = await Merchant.findById(merchantId);
         if (!merchant) throw new Error('Merchant not found');
 
         return merchant;
@@ -73,8 +73,10 @@ const create = async ({ userName, email, city, phoneNumber, file }) => {
         let user = await User.findOne({ phoneNumber });
         if (user) throw new Error('Phone already used');
 
-        user = await User.findOne({ email });
-        if (user) throw new Error('Email already used');
+        if (email) {
+            user = await User.findOne({ email });
+            if (user) throw new Error('Email already used');
+        }
 
         const dateTime = _giveCurrentDateTime();
 
@@ -87,9 +89,9 @@ const create = async ({ userName, email, city, phoneNumber, file }) => {
         const downloadURL = await getDownloadURL(snapShot.ref);
 
         user = new User({ userName, email, role: MERCHANT, phoneNumber });
-        user = await user.save();  
+        user = await user.save();
 
-        const merchant = new Merchant({ userId: user._id, city, license: downloadURL});
+        const merchant = new Merchant({ userId: user._id, city, license: downloadURL });
         await merchant.save();
 
         return merchant;
@@ -106,4 +108,15 @@ const _giveCurrentDateTime = () => {
     return date + ' ' + time;
 }
 
-module.exports = { show, update, list, isAvailable, create }
+const orders = async () => {
+    try {
+        const merchants = await Merchant.find();
+        if (!merchants.length) throw new Error('No Merchants Available');
+        return merchants;
+    }
+    catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+module.exports = { show, update, list, isAvailable, create, orders }

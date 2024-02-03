@@ -1,9 +1,10 @@
 const merchantService = require('../services/merchant.service');
 const { merchantListTransformer, merchantTransformer } = require('../transformers/merchant.transformer');
 const { isValidForUpdate } = require('../validators/merchant.validator');
+
 const show = async (req, res) => {
     try {
-        return res.status(200).json(merchantTransformer.transform(await merchantService.show({ userId: req.params.userId })));
+        return res.status(200).json(merchantTransformer.transform(await merchantService.show({ merchantId: req.params.merchantId })));
     }
     catch (err) {
         return res.status(500).json({ message: err.message });
@@ -49,4 +50,13 @@ const create = async (req, res) => {
     }
 }
 
-module.exports = { show, update, list, isAvailable, create }
+const orders = async (req, res) => {
+    try {
+        return res.status(200).json(await merchantService.orders());
+    }
+    catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { show, update, list, isAvailable, create, orders }

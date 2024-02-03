@@ -5,7 +5,7 @@ const userGender = require('../constants/userGender')
 const UserSchema = new mongoose.Schema({
     phoneNumber: { type: String, unique: true, required: true },
     userName: { type: String, required: true },
-    email: { type: String, unique: true },
+    email: { type: String },
     role: { type: String, enum: [userRole.ADMIN, userRole.MERCHANT, userRole.CUSTOMER, userRole.USER], default: userRole.USER },
     address: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }],
     gender: { type: String, enum: [userGender.MALE, userGender.FEMALE, userGender.OTHER] },

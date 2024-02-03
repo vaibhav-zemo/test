@@ -1,6 +1,7 @@
 const merchantTransformer = {
     transform: (merchant) => {
         return {
+            userId: merchant?.userId,
             merchantId: merchant?._id,
             isVerified: merchant?.isVerified,
             isAvailable: merchant?.isAvailable,
