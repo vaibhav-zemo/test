@@ -1,6 +1,8 @@
 const User = require('../models/user.model');
 const Merchant = require('../models/merchant.model');
 const { MERCHANT } = require('../constants/userRole');
+const Order = require('../models/order.model');
+const {PENDING} = require('../constants/orderStatus');
 
 const { initializeApp } = require('firebase/app')
 const config = require('../config/firebase.config.js');
@@ -108,15 +110,54 @@ const _giveCurrentDateTime = () => {
     return date + ' ' + time;
 }
 
-const orders = async () => {
+const getOrders = async ({merchantId}) => {
     try {
-        const merchants = await Merchant.find();
-        if (!merchants.length) throw new Error('No Merchants Available');
-        return merchants;
+        const merchant = await Merchant.findById(merchantId);
+        if (!merchant) throw new Error('Merchant not found');
+        if(!merchant.isAvailable) throw new Error('Merchant not available');
+
+        const orders = await Order.find({city: merchant.city, status: 'pending'}).populate('items.product');
+
+        return orders;
     }
     catch (err) {
         throw new Error(err.message);
     }
 }
 
-module.exports = { show, update, list, isAvailable, create, orders }
+const updateOrderStatus = async ({ merchantId, data }) => {
+    try {
+        const order = await Order.findById(data.orderId);
+        if (!order) {
+            throw new Error('Order not found');
+        }
+
+        const merchant = await Merchant.findById(merchantId);
+        if (!merchant) throw new Error('Merchant not found');
+
+        order.status = data.status;
+        await order.save();
+
+        merchant.orderAcceptedList.push(order._id);
+        await merchant.save();
+
+        return { message: 'Order status updated' };
+    }
+    catch (err) {
+        throw new Error(err.message)
+    }
+}
+
+const myOrders = async ({ merchantId }) => {
+    try {
+        const merchant = await Merchant.findById(merchantId).populate('orderAcceptedList');
+        if (!merchant) throw new Error('Merchant not found');
+        
+        return merchant.orderAcceptedList;
+    }
+    catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders }

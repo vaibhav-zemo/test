@@ -1,6 +1,7 @@
 const merchantService = require('../services/merchant.service');
-const { merchantListTransformer, merchantTransformer } = require('../transformers/merchant.transformer');
+const { merchantListTransformer, merchantTransformer, merchantOrderList } = require('../transformers/merchant.transformer');
 const { isValidForUpdate } = require('../validators/merchant.validator');
+const { orderListTransformer } = require('../transformers/order.transformer');
 
 const show = async (req, res) => {
     try {
@@ -50,13 +51,31 @@ const create = async (req, res) => {
     }
 }
 
-const orders = async (req, res) => {
+const getOrders = async (req, res) => {
     try {
-        return res.status(200).json(await merchantService.orders());
+        return res.status(200).json(merchantOrderList.transform(await merchantService.getOrders({ merchantId: req.params.merchantId })));
     }
     catch (err) {
         return res.status(500).json({ message: err.message });
     }
 }
 
-module.exports = { show, update, list, isAvailable, create, orders }
+const updateOrderStatus = async (req, res) => {
+    try {
+        return res.status(200).json(await merchantService.updateOrderStatus({ merchantId: req.params.merchantId, data: req.body }));
+    }
+    catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
+const myOrders = async (req, res) => {
+    try {
+        return res.status(200).json(orderListTransformer.transform(await merchantService.myOrders({ merchantId: req.params.merchantId })));
+    }
+    catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders }

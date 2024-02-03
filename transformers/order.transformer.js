@@ -1,3 +1,5 @@
+const dayjs = require('dayjs');
+
 const orderDetailedTransformer = {
     transform: (order) => {
         return {
@@ -31,7 +33,7 @@ const orderTransformer = {
     transform: (order) => {
         return {
             id: order?._id,
-            createdAt: order?.createdAt,
+            createdAt: dayjs(order?.createdAt).format('D MMMM YYYY, hh:mm A'),
             status: order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1),
             orderName: order?.orderName,
             address: order?.address,

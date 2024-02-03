@@ -16,9 +16,14 @@ const create = async ({ data }) => {
             item.product = item.productId;
         }
 
+        const city = data.address.trim().split(' ').slice(-3, -2)[0];
+
         const order = new Order(data);
-        if(!data.phoneNumber) order.phoneNumber = user.phoneNumber;
+        if (!data.phoneNumber) order.phoneNumber = user.phoneNumber;
+        order.city = city;
+
         await order.save();
+
         await order.populate({
             path: 'items.product',
             model: 'Product',
@@ -36,7 +41,7 @@ const create = async ({ data }) => {
                 break;
             }
         }
-        
+
         await order.save()
 
         const customer = await Customer.findOne({ userId: user._id });

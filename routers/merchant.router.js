@@ -11,6 +11,9 @@ router.put('/changeStatus', merchantController.update);
 router.get('/isAvailable', merchantController.isAvailable);
 
 router.post('/profile', upload.single("license"), merchantController.create)
-router.get('/orders', merchantController.orders)
+router.get('/orders/:merchantId', merchantController.getOrders)
+router.put('/order/status/:merchantId', merchantController.updateOrderStatus)
+
+router.get('/myOrders/:merchantId', merchantController.myOrders)
 
 module.exports = router;

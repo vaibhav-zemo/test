@@ -1,3 +1,5 @@
+const dayjs = require('dayjs');
+
 const merchantTransformer = {
     transform: (merchant) => {
         return {
@@ -21,4 +23,24 @@ const merchantListTransformer = {
     }
 }
 
-module.exports = { merchantTransformer, merchantListTransformer };
+const merchantOrder = {
+    transform: (order) => {
+        return {
+            orderId: order?._id,
+            address: order?.address,
+            createdAt: dayjs(order?.createdAt).format('hh:mm:ss A'),
+        }
+    }
+}
+
+const merchantOrderList = {
+    transform: (orders) => {
+        const response = {};
+        response.list = orders.map(order => {
+            return merchantOrder.transform(order);
+        })
+        return response;
+    }
+}
+
+module.exports = { merchantTransformer, merchantListTransformer, merchantOrderList };
