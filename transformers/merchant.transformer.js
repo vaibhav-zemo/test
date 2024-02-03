@@ -1,9 +1,11 @@
 const merchantTransformer = {
     transform: (merchant) => {
         return {
-            merchantId: merchant._id,
-            isVerified: merchant.isVerified,
-            isAvailable: merchant.isAvailable,
+            merchantId: merchant?._id,
+            isVerified: merchant?.isVerified,
+            isAvailable: merchant?.isAvailable,
+            city: merchant?.city,
+            license: merchant?.license,
         }
     }
 }

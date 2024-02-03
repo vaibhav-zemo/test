@@ -3,6 +3,7 @@ const authTransformer = {
         return {
             userId: data?.userId,
             otp: data?.otp,
+            message: data?.message
         }
     }
 }

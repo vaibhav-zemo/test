@@ -15,7 +15,7 @@ const update = async (req, res) => {
         const { error, value } = isValidForUpdate.validate(req.body);
         if (error) throw new Error(error.message);
 
-        return res.status(200).json(await merchantService.update({body: value}));
+        return res.status(200).json(await merchantService.update({ body: value }));
     }
     catch (err) {
         return res.status(500).json({ message: err.message });
@@ -40,4 +40,13 @@ const isAvailable = async (req, res) => {
     }
 }
 
-module.exports = { show, update, list, isAvailable }
+const create = async (req, res) => {
+    try {
+        return res.status(200).json(merchantTransformer.transform(await merchantService.create({ ...req.body, file: req.file })));
+    }
+    catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { show, update, list, isAvailable, create }

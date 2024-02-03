@@ -4,7 +4,7 @@ const sendOtp = (otp, mail) => {
     let htmlString = nodemailer.renderTemplate({ otp: otp }, '/otp.mailer.ejs')
     nodemailer.transporter.sendMail(
         {
-            from: 'support@cakelaya.com',
+            from: 'noreply@cakelaya.com',
             to: mail,
             subject: 'One-Time Password (OTP) Verification for Cakeलाया ?',
             html: htmlString,

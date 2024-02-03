@@ -5,7 +5,7 @@ const { MERCHANT, CUSTOMER } = require('../constants/userRole');
 const jwt = require('jsonwebtoken');
 const dayjs = require('dayjs')
 
-const create = async ({ name, email, phoneNumber, role, shopName }) => {
+const create = async ({ name, email, phoneNumber, role }) => {
     try {
         let user = await User.findOne({ phoneNumber });
 
@@ -23,7 +23,7 @@ const create = async ({ name, email, phoneNumber, role, shopName }) => {
             user = await newUser.save();
         }
 
-        const persona = await _createPersona({ role, userId: user._id, shopName });
+        const persona = await _createPersona({ role, userId: user._id });
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
         return { persona, token };
 
@@ -75,7 +75,7 @@ const remove = async ({ userId }) => {
     }
 }
 
-const _createPersona = async ({ role, userId, shopName }) => {
+const _createPersona = async ({ role, userId }) => {
     try {
         if (role === CUSTOMER) {
             const newCustomer = new Customer({
@@ -87,7 +87,6 @@ const _createPersona = async ({ role, userId, shopName }) => {
         else if (role === MERCHANT) {
             const newMerchant = new Merchant({
                 userId,
-                shopName,
             });
             await newMerchant.save();
             return newMerchant;
