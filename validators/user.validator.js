@@ -5,7 +5,7 @@ const { MERCHANT, CUSTOMER, ADMIN } = require('../constants/userRole');
 
 const isValidForCreate = Joi.object({
     name: Joi.string().required(),
-    email: Joi.string().email().required(),
+    email: Joi.string().email().allow(''),
     phoneNumber: Joi.string().length(10).pattern(/^[0-9]+$/).required(),
     role: Joi.string().valid(MERCHANT, CUSTOMER, ADMIN).required(),
 });

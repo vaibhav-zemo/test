@@ -10,8 +10,10 @@ const create = async ({ name, email, phoneNumber, role }) => {
         let user = await User.findOne({ phoneNumber });
 
         if (!user) {
-            user = await User.findOne({ email });
-            if(user) throw new Error('Email already exists');
+            if (email) {
+                user = await User.findOne({ email });
+                if (user) throw new Error('Email already exists');
+            }
 
             const newUser = new User({
                 userName: name,
@@ -34,8 +36,8 @@ const create = async ({ name, email, phoneNumber, role }) => {
 
 const update = async ({ data, userId }) => {
     try {
-        let {dob} = data;
-        if(dob){
+        let { dob } = data;
+        if (dob) {
             dob = dayjs(dob).toDate();
             data.dob = dob;
         }
@@ -58,12 +60,12 @@ const remove = async ({ userId }) => {
         const user = await User.findById(userId);
         if (!user) throw new Error('User not found');
 
-        if(user.role === MERCHANT){
-            const merchant = await Merchant.findOne({userId});
+        if (user.role === MERCHANT) {
+            const merchant = await Merchant.findOne({ userId });
             await Merchant.findByIdAndDelete(merchant._id);
         }
-        else if(user.role === CUSTOMER){
-            const customer = await Customer.findOne({userId});
+        else if (user.role === CUSTOMER) {
+            const customer = await Customer.findOne({ userId });
             await Customer.findByIdAndDelete(customer._id);
         }
 

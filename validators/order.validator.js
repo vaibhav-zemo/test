@@ -19,7 +19,7 @@ const isValidForCreate = Joi.object({
     address: Joi.string().required(),
     paymentId: Joi.objectId(),
     note: Joi.string().allow(''),
-    phoneNumber: Joi.string().required(),
+    phoneNumber: Joi.string().allow(''),
 })
 
 const isValidForUpdate = Joi.object({

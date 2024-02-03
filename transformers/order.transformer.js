@@ -22,6 +22,7 @@ const orderDetailedTransformer = {
             status: order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1),
             note: order?.note,
             couponCode: order?.couponCode,
+            mobileNumber: order?.phoneNumber,
         }
     }
 }
