@@ -82,23 +82,25 @@ const update = async ({ id, data }) => {
     }
 }
 
-const show = async ({ categoryId, customerId }) => {
+const show = async ({ categoryId, userId }) => {
     try {
-        const category = await Category.findById(categoryId).populate('products')
+        let category = await Category.findById(categoryId).populate('products');
         if (!category) {
             throw new Error("Category not found")
         }
 
-        const customer = await Customer.findById(customerId);
+        const customer = await Customer.findOne({ userId });
         if (!customer) {
             throw new Error("Customer not found")
         }
+
         const products = category.products.map(product => {
             const isFavourite = customer.favourites.includes(product._id)
             return { ...product._doc, isFavourite }
         })
-
-        return products;
+        
+        category = { ...category._doc, products }
+        return category;
     }
     catch (err) {
         throw new Error(err.message)

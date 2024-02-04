@@ -20,9 +20,11 @@ const categoryListTransformer = {
 }
 
 const categoryDetailedTransformer = {
-    transform: (products) => {
+    transform: (category) => {
         return {
-            products: products?.map(product => {
+            id: category?._id,
+            name: category?.name,
+            products: category?.products?.map(product => {
                 return {
                     id: product?._id,
                     name: product?.name,

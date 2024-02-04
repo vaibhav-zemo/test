@@ -14,7 +14,6 @@ const getUserTransformer = {
     transform: (user) => {
         return {
             userId: user?._id,
-            customerId: user?.customerId,
             userName: user?.userName,
             phoneNumber: user?.phoneNumber,
             email: user?.email,

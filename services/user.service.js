@@ -109,9 +109,7 @@ const list = async () => {
 const show = async ({ userId }) => {
     try {
         let user = await User.findById(userId).populate('address');
-        if (!user) throw new Error('User not found');
-        let customer = await Customer.findOne({ userId });
-        user.customerId = customer._id;
+        if (!user) throw new Error('User not found');        
         return user;
     } catch (error) {
         throw new Error(error);
