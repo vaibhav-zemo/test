@@ -4,7 +4,7 @@ const userTransformer = {
     transform: (data) => {
         return {
             userId: data.persona?.userId,
-            id: data.persona?._id,
+            customerId: data.persona?._id,
             token: data.token,
         }
     }
@@ -13,7 +13,8 @@ const userTransformer = {
 const getUserTransformer = {
     transform: (user) => {
         return {
-            id: user?._id,
+            userId: user?._id,
+            customerId: user?.customerId,
             userName: user?.userName,
             phoneNumber: user?.phoneNumber,
             email: user?.email,

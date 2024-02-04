@@ -89,14 +89,16 @@ const show = async ({ categoryId, customerId }) => {
             throw new Error("Category not found")
         }
 
-        if (customerId) {
-            const customer = await Customer.findById(customerId).populate('favourites');
-            if (!customer) {
-                throw new Error("Customer not found")
-            }
+        const customer = await Customer.findById(customerId);
+        if (!customer) {
+            throw new Error("Customer not found")
         }
+        const products = category.products.map(product => {
+            const isFavourite = customer.favourites.includes(product._id)
+            return { ...product._doc, isFavourite }
+        })
 
-        return category;
+        return products;
     }
     catch (err) {
         throw new Error(err.message)
