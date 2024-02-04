@@ -1,8 +1,9 @@
+const dayjs = require('dayjs');
 const User = require('../models/user.model');
 const Merchant = require('../models/merchant.model');
 const { MERCHANT } = require('../constants/userRole');
 const Order = require('../models/order.model');
-const {PENDING} = require('../constants/orderStatus');
+const { PENDING, DELIVERED } = require('../constants/orderStatus');
 
 const { initializeApp } = require('firebase/app')
 const config = require('../config/firebase.config.js');
@@ -110,13 +111,13 @@ const _giveCurrentDateTime = () => {
     return date + ' ' + time;
 }
 
-const getOrders = async ({merchantId}) => {
+const getOrders = async ({ merchantId, orderStatus }) => {
     try {
         const merchant = await Merchant.findById(merchantId);
         if (!merchant) throw new Error('Merchant not found');
-        if(!merchant.isAvailable) throw new Error('Merchant not available');
+        if (!merchant.isAvailable) throw new Error('Merchant not available');
 
-        const orders = await Order.find({city: merchant.city, status: 'pending'}).populate('items.product');
+        const orders = await Order.find({ city: merchant.city, status: orderStatus }).populate('items.product');
 
         return orders;
     }
@@ -152,7 +153,7 @@ const myOrders = async ({ merchantId }) => {
     try {
         const merchant = await Merchant.findById(merchantId).populate('orderAcceptedList');
         if (!merchant) throw new Error('Merchant not found');
-        
+
         return merchant.orderAcceptedList;
     }
     catch (err) {
@@ -160,4 +161,43 @@ const myOrders = async ({ merchantId }) => {
     }
 }
 
-module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders }
+const earning = async ({ merchantId }) => {
+    try {
+        const merchant = await Merchant.findById(merchantId).populate('orderAcceptedList');
+        if (!merchant) throw new Error('Merchant not found');
+
+        const orders = merchant.orderAcceptedList.filter(order => order.status === DELIVERED);
+
+        const today = dayjs();
+        let todayEarning = 0, weekEarning = 0;
+        const todayOrders = [], weekOrders = [];
+
+        for (let order of orders) 
+        {   
+            if (dayjs(order.createdAt).isSame(today, 'day')) {
+                todayEarning += order.totalShopAmount;
+                todayOrders.push({
+                    orderId: order._id,
+                    createdAt: dayjs(order.createdAt).format('D MMMM YYYY, hh:mm A'),
+                    amount: order.totalShopAmount
+                });
+            }
+
+            if (dayjs(order.createdAt).isSame(today, 'week')) {
+                weekEarning += order.totalShopAmount;
+                weekOrders.push({
+                    orderId: order._id,
+                    createdAt: dayjs(order.createdAt).format('D MMMM YYYY, hh:mm A'),
+                    amount: order.totalShopAmount
+                });
+            }
+        }
+
+        return { todayEarning, todayOrders, weekEarning, weekOrders };
+    }
+    catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning }

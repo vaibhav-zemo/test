@@ -56,6 +56,7 @@ const bulkUpload = async ({ file }) => {
                         description: offer.description,
                         imageUrl: offer.imageUrl,
                         city: city._id,
+                        categoryId: offer.categoryId
                     });
                     await newOffer.save();
                 }

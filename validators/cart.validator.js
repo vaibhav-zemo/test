@@ -6,6 +6,7 @@ const itemSchema = Joi.object({
     productId: Joi.objectId().required(),
     message: Joi.string().allow(''),
     price: Joi.number().required(),
+    shopPrice: Joi.number(),
     weight: Joi.string(),
     discount: Joi.number(),
     flavour: Joi.string(),

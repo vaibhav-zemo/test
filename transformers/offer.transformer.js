@@ -1,6 +1,8 @@
 const offerTransformer = {
     transform: (offer) => {
         return {
+            id: offer?._id,
+            categoryId: offer?.categoryId,
             title: offer?.title,
             description: offer?.description,
             imageUrl: offer?.imageUrl,

@@ -7,13 +7,14 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/profile/:merchantId', merchantController.show);
 router.get('/list', merchantController.list);
-router.put('/changeStatus', merchantController.update);
 router.get('/isAvailable', merchantController.isAvailable);
+router.get('/orders/:merchantId/:orderStatus', merchantController.getOrders)
+router.get('/myOrders/:merchantId', merchantController.myOrders)
+router.get('/earning/:merchantId', merchantController.earning)
 
 router.post('/profile', upload.single("license"), merchantController.create)
-router.get('/orders/:merchantId', merchantController.getOrders)
+router.put('/changeStatus', merchantController.update);
 router.put('/order/status/:merchantId', merchantController.updateOrderStatus)
 
-router.get('/myOrders/:merchantId', merchantController.myOrders)
 
 module.exports = router;

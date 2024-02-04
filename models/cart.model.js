@@ -8,11 +8,13 @@ const CartSchema = new mongoose.Schema({
         message: { type: String, default: '' },
         weight: { type: String },
         price: { type: Number, required: true },
+        shopPrice: { type: Number },
         discount: { type: Number },
         occasion: { type: String, enum: [BIRTHDAY, ANNIVERSARY, OTHER] },
         flavour: { type: String },
     }],
     totalAmount: { type: Number, default: 0 },
+    totalShopAmount: { type: Number, default: 0 },
     couponCode: { type: String, default: '' },
     discountAmount: { type: Number, default: 0 },
 }, { timestamps: true })

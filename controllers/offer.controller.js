@@ -32,7 +32,7 @@ const bulkUpload = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        return res.status(200).json(await offerService.update({ id: req.params.id, data: req.body }))
+        return res.status(200).json(offerTransformer.transform(await offerService.update({ data: req.body, id: req.params.id })))
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }

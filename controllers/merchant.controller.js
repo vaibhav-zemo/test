@@ -53,7 +53,7 @@ const create = async (req, res) => {
 
 const getOrders = async (req, res) => {
     try {
-        return res.status(200).json(merchantOrderList.transform(await merchantService.getOrders({ merchantId: req.params.merchantId })));
+        return res.status(200).json(merchantOrderList.transform(await merchantService.getOrders({ merchantId: req.params.merchantId, orderStatus: req.params.orderStatus })));
     }
     catch (err) {
         return res.status(500).json({ message: err.message });
@@ -78,4 +78,13 @@ const myOrders = async (req, res) => {
     }
 }
 
-module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders }
+const earning = async (req, res) => {
+    try {
+        return res.status(200).json(await merchantService.earning({ merchantId: req.params.merchantId }));
+    }
+    catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning }

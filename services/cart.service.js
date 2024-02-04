@@ -72,7 +72,9 @@ const update = async ({ userId, data }) => {
             data.item.product = product;
             let amount = data.item.price;
             cart.items.push(data.item)
+
             cart.totalAmount += amount;
+            cart.totalShopAmount += data.item.shopPrice;
 
             await cart.save()
             const newItem = cart.items[cart.items.length - 1];
@@ -121,6 +123,7 @@ const remove = async ({ userId, itemId }) => {
             for (let item of cart.items) {
                 if (item._id == itemId) {
                     cart.totalAmount -= item.price;
+                    cart.totalShopAmount -= item.shopPrice;
                     cart.items.pull(item._id);
                     await cart.save();
                     return { message: 'Item remove successfully' }

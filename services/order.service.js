@@ -22,8 +22,6 @@ const create = async ({ data }) => {
         if (!data.phoneNumber) order.phoneNumber = user.phoneNumber;
         order.city = city;
 
-        await order.save();
-
         await order.populate({
             path: 'items.product',
             model: 'Product',
