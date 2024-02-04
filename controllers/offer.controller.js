@@ -30,8 +30,17 @@ const bulkUpload = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    try {
+        return res.status(200).json(await offerService.update({ id: req.params.id, data: req.body }))
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
 module.exports = {
     create,
     list,
-    bulkUpload
+    bulkUpload,
+    update
 }

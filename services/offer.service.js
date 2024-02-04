@@ -71,8 +71,23 @@ const bulkUpload = async ({ file }) => {
     }
 }
 
+const update = async ({ id, data }) => {
+    try {
+        const offer = await Offer.findByIdAndUpdate(
+            id,
+            { $set: data },
+            { new: true }
+        )
+
+        return offer;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
 module.exports = {
     create,
     list,
-    bulkUpload
+    bulkUpload,
+    update
 }

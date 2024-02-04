@@ -6,6 +6,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.post('/', offerController.create)
 router.get('/', offerController.list)
+router.put('/:id', offerController.update)
 
 router.post('/bulkUpload', upload.single("file"), offerController.bulkUpload)
 

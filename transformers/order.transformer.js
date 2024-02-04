@@ -37,6 +37,7 @@ const orderTransformer = {
             status: order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1),
             orderName: order?.orderName,
             address: order?.address,
+            eta: dayjs(order?.createdAt).add(90, 'm').format('hh:mm A')
         }
     }
 }
