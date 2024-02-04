@@ -13,7 +13,7 @@ const create = async ({ phoneNumber, mail }) => {
             if(user){
                 return {message: 'Mail already used'};
             }
-            sendOtp(otp, mail);
+           // sendOtp(otp, mail);
             return { otp };
         }
         const user = await User.findOne({ phoneNumber });
