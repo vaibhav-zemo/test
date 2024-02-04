@@ -28,7 +28,7 @@ const merchantOrder = {
         return {
             orderId: order?._id,
             address: order?.address,
-            createdAt: dayjs(order?.createdAt).format('hh:mm:ss A'),
+            createdAt: dayjs(order?.createdAt).add(90, 'm').format('hh:mm:ss A'),
         }
     }
 }

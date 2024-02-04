@@ -18,7 +18,7 @@ const orderDetailedTransformer = {
                     discount: item?.discount,
                 }
             }),
-            createdAt: order?.createdAt,
+            createdAt: dayjs(order?.createdAt).format('D MMMM YYYY, hh:mm A'),
             totalAmount: order?.totalAmount,
             address: order?.address,
             status: order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1),
