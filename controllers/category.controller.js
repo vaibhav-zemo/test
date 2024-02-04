@@ -48,7 +48,7 @@ const list = async (req, res) => {
 
 const show = async (req, res) => {
     try {
-        return res.status(200).json(categoryDetailedTransformer.transform(await categoryService.show({id: req.params.id})))
+        return res.status(200).json(categoryDetailedTransformer.transform(await categoryService.show({categoryId: req.params.categoryId, userId: req.params.userId})))
     }
     catch (err) {
         return res.status(500).json({ message: err.message })

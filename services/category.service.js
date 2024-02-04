@@ -1,5 +1,6 @@
 const Category = require('../models/category.model');
 const City = require('../models/city.model');
+const Customer = require('../models/customer.model');
 const csv = require('csvtojson');
 
 const list = async ({ city }) => {
@@ -81,12 +82,13 @@ const update = async ({ id, data }) => {
     }
 }
 
-const show = async ({ id }) => {
+const show = async ({ categoryId, userId }) => {
     try {
-        const category = await Category.findById(id).populate('products')
+        const category = await Category.findById(categoryId).populate('products')
         if (!category) {
             throw new Error("Category not found")
         }
+        // const customer = await Customer.findOne({ userId: userId }).populate('favourites');
         return category;
     }
     catch (err) {

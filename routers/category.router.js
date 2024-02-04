@@ -5,7 +5,7 @@ const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/', categoryController.list);
-router.get('/:id', categoryController.show);
+router.get('/:categoryId/:userId', categoryController.show);
 router.post('/', categoryController.create);
 router.post('/bulkUpload', upload.single("file"), categoryController.bulkUpload);
 router.put('/:id', categoryController.update);

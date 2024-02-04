@@ -6,6 +6,12 @@ const favouriteTransformer = {
             imageUrl: favourite.imageUrl,
             rating: favourite.rating,
             price: favourite.prices[0].price,
+            discountedPrice: Math.ceil(favourite.prices[0].price * 1.25),
+            discount: favourite.discount,
+            description: favourite.description,
+            flavours: favourite.flavours,
+            note: favourite.note,
+            serving: favourite.serving,
         }
     }
 }
