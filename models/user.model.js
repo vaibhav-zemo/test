@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
     email: { type: String },
     role: { type: String, enum: [userRole.ADMIN, userRole.MERCHANT, userRole.CUSTOMER, userRole.USER], default: userRole.USER },
     address: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }],
-    gender: { type: String, enum: [userGender.MALE, userGender.FEMALE, userGender.OTHER] },
+    gender: { type: String },
     cartId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
     dob: { type: Date, default: null },
 }, { timestamps: true })
