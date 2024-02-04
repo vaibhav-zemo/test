@@ -82,13 +82,20 @@ const update = async ({ id, data }) => {
     }
 }
 
-const show = async ({ categoryId, userId }) => {
+const show = async ({ categoryId, customerId }) => {
     try {
         const category = await Category.findById(categoryId).populate('products')
         if (!category) {
             throw new Error("Category not found")
         }
-        // const customer = await Customer.findOne({ userId: userId }).populate('favourites');
+
+        if (customerId) {
+            const customer = await Customer.findById(customerId).populate('favourites');
+            if (!customer) {
+                throw new Error("Customer not found")
+            }
+        }
+
         return category;
     }
     catch (err) {
@@ -128,7 +135,7 @@ const bulkUpload = async ({ file }) => {
             })
 
         return { message: "Categories uploaded successfully" }
-    
+
     } catch (error) {
         throw new Error(error.message)
     }
