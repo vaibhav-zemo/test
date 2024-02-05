@@ -35,7 +35,7 @@ const list = async (req, res) => {
 
 const isAvailable = async (req, res) => {
     try {
-        return res.status(200).json(await merchantService.isAvailable());
+        return res.status(200).json(await merchantService.isAvailable({city: req.params.city}));
     }
     catch (err) {
         return res.status(500).json({ message: err.message });

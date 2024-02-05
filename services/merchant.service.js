@@ -58,10 +58,9 @@ const list = async () => {
     }
 }
 
-const isAvailable = async () => {
+const isAvailable = async ({ city }) => {
     try {
-        const merchants = await Merchant.find({ isAvailable: true });
-        console.log(merchants)
+        const merchants = await Merchant.find({ isAvailable: true, city: city });
         if (!merchants.length) throw new Error('No Merchants Available');
         return { message: 'Merchants Available' };
     }
@@ -172,8 +171,7 @@ const earning = async ({ merchantId }) => {
         let todayEarning = 0, weekEarning = 0;
         const todayOrders = [], weekOrders = [];
 
-        for (let order of orders) 
-        {   
+        for (let order of orders) {
             if (dayjs(order.createdAt).isSame(today, 'day')) {
                 todayEarning += order.totalShopAmount;
                 todayOrders.push({

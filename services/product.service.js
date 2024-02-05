@@ -109,73 +109,56 @@ const update = async ({ id, data }) => {
     }
 }
 
-const _saveProduct = async (product) => {
-    const { city, category, name, description, imageUrl, price, shopPrice, weight, flavours, discount, note, serving } = product;
-
-    const searchCity = await City.findOne({ name: city });
-    const searchCategory = await Category.findOne({ name: category });
-
-    const searchProduct = await Product.findOne({ name: name, city: searchCity, category: searchCategory, imageUrl: imageUrl });
-    if (searchProduct) {
-        const priceData = {
-            weight: weight,
-            shopPrice: shopPrice,
-            price: price
-        }
-        searchProduct.prices.push(priceData);
-        await searchProduct.save();
-    }
-    else {
-        const newProduct = new Product({
-            name: name,
-            description: description,
-            imageUrl: imageUrl,
-            category: searchCategory,
-            prices: [{
-                weight: weight,
-                shopPrice: shopPrice,
-                price: price
-            }],
-            flavours: flavours?.split(', '),
-            city: searchCity,
-            discount: discount,
-            note: note,
-            serving: serving
-        });
-        await newProduct.save();
-
-        searchCity.products.push(newProduct);
-        await searchCity.save();
-
-        searchCategory.products.push(newProduct);
-        await searchCategory.save();
-    }
-}
 
 const bulkCreate = async ({ file }) => {
     try {
         csv()
             .fromString(file.buffer.toString())
-            .then(async (json) => {
+            .then(async (products) => {
 
-                const batchSize = 7
-                const batches = []
-                let allProducts = [...json]
+                for (let product of products) {
+                    const { city, category, name, description, imageUrl, price, shopPrice, weight, flavours, discount, note, serving } = product;
 
-                while (allProducts.length) {
-                    const currentBatch = allProducts.splice(0, batchSize)
-                    const batch = currentBatch.map((product) => {
-                        return () => _saveProduct(product)
-                    })
-                    batches.push(batch)
+                    const searchCity = await City.findOne({ name: city });
+                    const searchCategory = await Category.findOne({ name: category });
+
+                    const searchProduct = await Product.findOne({ name: name, city: searchCity, category: searchCategory, imageUrl: imageUrl });
+                    if (searchProduct) {
+                        const priceData = {
+                            weight: weight,
+                            shopPrice: shopPrice,
+                            price: price
+                        }
+                        searchProduct.prices.push(priceData);
+                        await searchProduct.save();
+                    }
+                    else {
+                        const newProduct = new Product({
+                            name: name,
+                            description: description,
+                            imageUrl: imageUrl,
+                            category: searchCategory,
+                            prices: [{
+                                weight: weight,
+                                shopPrice: shopPrice,
+                                price: price
+                            }],
+                            flavours: flavours?.split(', '),
+                            city: searchCity,
+                            discount: discount,
+                            note: note,
+                            serving: serving
+                        });
+                        await newProduct.save();
+
+                        searchCity.products.push(newProduct);
+                        await searchCity.save();
+
+                        searchCategory.products.push(newProduct);
+                        await searchCategory.save();
+                    }
                 }
-
-                for (const batch of batches) {
-                    // delay 2seconds between every batch
-                    await new Promise(resolve => setTimeout(resolve, 2000))
-                    // await all the wrapped functions
-                    await Promise.all(batch.map(func => func()))
-                }
+                
             })
             .catch((err) => {
                 throw new Error(err.message)
