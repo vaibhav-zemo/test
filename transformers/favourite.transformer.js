@@ -6,7 +6,7 @@ const favouriteTransformer = {
             imageUrl: favourite.imageUrl,
             rating: favourite.rating,
             price: favourite.prices[0].shopPrice + favourite.prices[0].platformFee,
-            discountedPrice: Math.ceil(avourite.prices[0].shopPrice + favourite.prices[0].platformFee * 1.25),
+            discountedPrice: Math.ceil(favourite.prices[0].shopPrice + favourite.prices[0].platformFee * 1.25),
             discount: favourite.discount,
             description: favourite.description,
             flavours: favourite.flavours,
