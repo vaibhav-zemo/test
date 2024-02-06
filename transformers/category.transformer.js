@@ -30,6 +30,7 @@ const categoryDetailedTransformer = {
                     name: product?.name,
                     image: product?.imageUrl,
                     price: product?.prices[0]?.price,
+                    shopPrice: product?.prices[0]?.shopPrice,
                     discountedPrice: Math.ceil(product?.prices[0]?.price * 1.25),
                     rating: product?.rating,
                     discount: product?.discount,
