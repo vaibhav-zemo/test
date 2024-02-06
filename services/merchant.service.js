@@ -4,6 +4,7 @@ const Merchant = require('../models/merchant.model');
 const { MERCHANT } = require('../constants/userRole');
 const Order = require('../models/order.model');
 const { PENDING, DELIVERED } = require('../constants/orderStatus');
+const { DELIVERY_FEE } = require('../constants/deliveryFee.js');
 
 const { initializeApp } = require('firebase/app')
 const config = require('../config/firebase.config.js');
