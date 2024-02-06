@@ -1,4 +1,5 @@
 const dayjs = require('dayjs');
+const { DELIVERY_FEE } = require('../constants/deliveryFee');
 
 const merchantTransformer = {
     transform: (merchant) => {

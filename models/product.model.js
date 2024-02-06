@@ -11,7 +11,7 @@ const ProductSchema = new mongoose.Schema({
         {
             weight: { type: String },
             shopPrice: { type: Number },
-            price: { type: Number, required: true },
+            platformFee: { type: Number },
         }
     ],
     flavours: [{ type: String }],

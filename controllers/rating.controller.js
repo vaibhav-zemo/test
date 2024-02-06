@@ -7,10 +7,19 @@ const create = async (req, res) => {
         if (error) {
             return res.status(400).json({ message: error.message });
         }
-        return res.status(200).json(await ratingService.create({ ...value }));
+        return res.status(200).json(await ratingService.create({ ...value, userId: req.params.userId }));
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 }
 
-module.exports = { create }
+const show = async (req, res) => {
+    try {
+        return res.status(200).json(await ratingService.show({userId: req.params.userId, productId: req.params.productId}))
+    }
+    catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+module.exports = { create, show }

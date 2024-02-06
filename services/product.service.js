@@ -117,48 +117,46 @@ const bulkCreate = async ({ file }) => {
             .then(async (products) => {
 
                 for (let product of products) {
-                    const { city, category, name, description, imageUrl, price, shopPrice, weight, flavours, discount, note, serving } = product;
+                    const { city, category, name, description, imageUrl, shopPrice, platformFees, weight, flavours, discount, note, serving } = product;
 
                     const searchCity = await City.findOne({ name: city });
                     const searchCategory = await Category.findOne({ name: category });
 
-                    const searchProduct = await Product.findOne({ name: name, city: searchCity, category: searchCategory, imageUrl: imageUrl });
-                    if (searchProduct) {
-                        const priceData = {
-                            weight: weight,
-                            shopPrice: shopPrice,
-                            price: price
-                        }
-                        searchProduct.prices.push(priceData);
-                        await searchProduct.save();
-                    }
-                    else {
-                        const newProduct = new Product({
-                            name: name,
-                            description: description,
-                            imageUrl: imageUrl,
-                            category: searchCategory,
-                            prices: [{
-                                weight: weight,
-                                shopPrice: shopPrice,
-                                price: price
-                            }],
-                            flavours: flavours?.split(', '),
-                            city: searchCity,
-                            discount: discount,
-                            note: note,
-                            serving: serving
-                        });
-                        await newProduct.save();
+                    const splitShopPrice = shopPrice.split(', ');
+                    const splitPlatformFees = platformFees.split(', ');
+                    const splitWeight = weight.split(', ');
 
-                        searchCity.products.push(newProduct);
-                        await searchCity.save();
-
-                        searchCategory.products.push(newProduct);
-                        await searchCategory.save();
+                    let prices = [];
+                    for (let i = 0; i < splitShopPrice.length; i++) {
+                        prices.push({
+                            weight: splitWeight[i],
+                            shopPrice: splitShopPrice[i],
+                            platformFee: splitPlatformFees[i]
+                        })
                     }
+
+                    const newProduct = new Product({
+                        name: name,
+                        description: description,
+                        imageUrl: imageUrl,
+                        category: searchCategory,
+                        prices: prices,
+                        flavours: flavours?.split(', '),
+                        city: searchCity,
+                        discount: discount,
+                        note: note,
+                        serving: serving
+                    });
+                    await newProduct.save();
+
+                    searchCity.products.push(newProduct);
+                    await searchCity.save();
+
+                    searchCategory.products.push(newProduct);
+                    await searchCategory.save();
+
                 }
-                
+
             })
             .catch((err) => {
                 throw new Error(err.message)

@@ -13,8 +13,8 @@ const productTransformer = {
             prices: product?.prices?.map(price => {
                 return {
                     weight: price?.weight,
-                    price: price?.price,
-                    discountedPrice: Math.ceil(price?.price * 1.25),
+                    price: price?.shopPrice + price?.platformFee,
+                    discountedPrice: Math.ceil((price?.shopPrice + price?.platformFee) * 1.25),
                     shopPrice: price?.shopPrice
                 }
             })

@@ -173,20 +173,20 @@ const earning = async ({ merchantId }) => {
 
         for (let order of orders) {
             if (dayjs(order.createdAt).isSame(today, 'day')) {
-                todayEarning += order.totalShopAmount;
+                todayEarning += order.totalShopAmount + DELIVERY_FEE;
                 todayOrders.push({
                     orderId: order._id,
                     createdAt: dayjs(order.createdAt).format('D MMMM YYYY, hh:mm A'),
-                    amount: order.totalShopAmount
+                    amount: order.totalShopAmount + DELIVERY_FEE
                 });
             }
 
             if (dayjs(order.createdAt).isSame(today, 'week')) {
-                weekEarning += order.totalShopAmount;
+                weekEarning += order.totalShopAmount + DELIVERY_FEE;
                 weekOrders.push({
                     orderId: order._id,
                     createdAt: dayjs(order.createdAt).format('D MMMM YYYY, hh:mm A'),
-                    amount: order.totalShopAmount
+                    amount: order.totalShopAmount + DELIVERY_FEE
                 });
             }
         }
