@@ -5,7 +5,7 @@ const { sendOtp } = require('../mailers/otp.mailer');
 const create = async ({ phoneNumber, mail }) => {
     try {
         if (phoneNumber === '9999999999') {
-            return { otp: '111111', userId: '65b741027572518507b5b412' };
+            return { otp: '111111', userId: '65c32ee05bf089a0b62e3cd7' };
         }
         const otp = _generateOTP(6);
         if (mail) {
@@ -18,7 +18,7 @@ const create = async ({ phoneNumber, mail }) => {
         }
         const user = await User.findOne({ phoneNumber });
 
-        // _sendOTP(otp, phoneNumber);
+         _sendOTP(otp, phoneNumber);
         return { userId: user?._id, otp };
     } catch (error) {
         throw new Error(error.message);
