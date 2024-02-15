@@ -1,21 +1,24 @@
 require('dotenv').config();
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
+const axios = require('axios');
 
 const verifyPayment = async ({ body }) => {
     try {
-        const { order_id, razorpay_payment_id, razorpay_signature } = body;
-        const sign = order_id + "|" + razorpay_payment_id;
-        const expectedSign = crypto
-            .createHmac("sha256", process.env.TEST_RAZORPAY_KEY_SECRET)
-            .update(sign.toString())
-            .digest("hex");
+        const options = {
+            method: 'GET',
+            url: `https://sandbox.cashfree.com/pg/orders/${body.orderId}`,
+            headers: {
+                accept: 'application/json',
+                'x-api-version': '2023-08-01',
+                'x-client-id': process.env.TEST_CASHFREE_CLIENT_ID,
+                'x-client-secret': process.env.TEST_CASHFREE_SECRET_KEY
+            }
+        };
 
-        if (razorpay_signature === expectedSign) {
-            return { message: "Payment verified successfully" };
-        } else {
-            return { message: "Invalid signature sent!" };
-        }
+        const res = await axios.request(options);
+        return res.data;
+
     } catch (err) {
         throw new Error(err.message)
     }
@@ -23,23 +26,35 @@ const verifyPayment = async ({ body }) => {
 
 const createOrder = async ({ body }) => {
     try {
-        const instance = new Razorpay({
-            key_id: process.env.TEST_RAZORPAY_KEY_ID,
-            key_secret: process.env.TEST_RAZORPAY_KEY_SECRET,
-        })
-
         const options = {
-            amount: parseInt(body.amount) * 100,
-            currency: "INR",
-            receipt: crypto.randomBytes(10).toString("hex"),
-        }
+            method: 'POST',
+            url: 'https://sandbox.cashfree.com/pg/orders',
+            headers: {
+                accept: 'application/json',
+                'x-api-version': '2023-08-01',
+                'content-type': 'application/json',
+                'x-client-id': process.env.TEST_CASHFREE_CLIENT_ID,
+                'x-client-secret': process.env.TEST_CASHFREE_SECRET_KEY
+            },
+            data: {
+                customer_details: {
+                    customer_id: body.userId + Date.now(),
+                    customer_email: body.email,
+                    customer_phone: body.phone,
+                    customer_name: body.name
+                },
+                order_amount: body.amount,
+                order_id: 'ORID665456' + Date.now(),
+                order_currency: 'INR',
+            }
+        };
 
-        const order = await instance.orders.create(options);
-        if (!order) throw new Error("Some error occured while creating order");
 
-        return order;
-    } catch (err) {
-        throw new Error(err.message)
+        const res = await axios.request(options);
+        return res.data
+
+    } catch (error) {
+        throw new Error(error.message)
     }
 }
 
