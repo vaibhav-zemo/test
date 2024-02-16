@@ -39,7 +39,6 @@ const createOrder = async ({ body }) => {
             data: {
                 customer_details: {
                     customer_id: body.userId + Date.now(),
-                    customer_email: body.email,
                     customer_phone: body.phone,
                     customer_name: body.name
                 },
