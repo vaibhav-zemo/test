@@ -6,7 +6,6 @@ const isValidForVerify = Joi.object({
 
 const isValidForCreate = Joi.object({
     userId: Joi.string().required(),
-    email: Joi.string().email().required(),
     phone: Joi.string().required(),
     name: Joi.string().required(),
     amount: Joi.number().required(),
