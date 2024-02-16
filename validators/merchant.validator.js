@@ -1,8 +1,9 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi)
 const { ACCEPTED, CANCELLED, DELIVERED, DISPATCHED } = require('../constants/orderStatus');
 
 const isValidForUpdate = Joi.object({
-    merchantId: Joi.string().required(),
+    userId: Joi.objectId().required(),
     isAvailable: Joi.boolean(),
     isVerified: Joi.boolean(),
 }).xor('isAvailable', 'isVerified');

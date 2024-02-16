@@ -27,8 +27,8 @@ const show = async ({ userId }) => {
 
 const update = async ({ body }) => {
     try {
-        const merchant = await Merchant.findByIdAndUpdate({
-            _id: body.merchantId
+        const merchant = await Merchant.findOneAndUpdate({
+            userId: body.userId
         },
             {
                 $set: {
