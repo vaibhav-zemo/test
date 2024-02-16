@@ -13,9 +13,9 @@ initializeApp(config.firebaseConfig)
 const { getStorage, ref, uploadBytesResumable, getDownloadURL } = require('firebase/storage')
 const storage = getStorage();
 
-const show = async ({ merchantId }) => {
+const show = async ({ userId }) => {
     try {
-        const merchant = await Merchant.findById(merchantId);
+        const merchant = await Merchant.findOne({ userId });
         if (!merchant) throw new Error('Merchant not found');
 
         return merchant;
@@ -111,9 +111,9 @@ const _giveCurrentDateTime = () => {
     return date + ' ' + time;
 }
 
-const getOrders = async ({ merchantId, orderStatus }) => {
+const getOrders = async ({ userId, orderStatus }) => {
     try {
-        const merchant = await Merchant.findById(merchantId);
+        const merchant = await Merchant.findOne({ userId: userId });
         if (!merchant) throw new Error('Merchant not found');
         if (!merchant.isAvailable) throw new Error('Merchant not available');
 
@@ -126,14 +126,14 @@ const getOrders = async ({ merchantId, orderStatus }) => {
     }
 }
 
-const updateOrderStatus = async ({ merchantId, data }) => {
+const updateOrderStatus = async ({ userId, data }) => {
     try {
         const order = await Order.findById(data.orderId);
         if (!order) {
             throw new Error('Order not found');
         }
 
-        const merchant = await Merchant.findById(merchantId);
+        const merchant = await Merchant.findOne({ userId: userId });
         if (!merchant) throw new Error('Merchant not found');
 
         order.status = data.status;
@@ -149,9 +149,9 @@ const updateOrderStatus = async ({ merchantId, data }) => {
     }
 }
 
-const myOrders = async ({ merchantId }) => {
+const myOrders = async ({ userId }) => {
     try {
-        const merchant = await Merchant.findById(merchantId).populate('orderAcceptedList');
+        const merchant = await Merchant.findOne({ userId: userId }).populate('orderAcceptedList');
         if (!merchant) throw new Error('Merchant not found');
 
         return merchant.orderAcceptedList;
@@ -161,9 +161,9 @@ const myOrders = async ({ merchantId }) => {
     }
 }
 
-const earning = async ({ merchantId }) => {
+const earning = async ({ userId }) => {
     try {
-        const merchant = await Merchant.findById(merchantId).populate('orderAcceptedList');
+        const merchant = await Merchant.findOne({ userId: userId }).populate('orderAcceptedList');
         if (!merchant) throw new Error('Merchant not found');
 
         const orders = merchant.orderAcceptedList.filter(order => order.status === DELIVERED);

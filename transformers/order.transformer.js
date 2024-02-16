@@ -37,7 +37,7 @@ const orderTransformer = {
             id: order?._id,
             createdAt: dayjs(order?.createdAt).format('D MMMM YYYY, hh:mm A'),
             status: order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1),
-            orderName: order?.orderName,
+            orderName: order?.orderName + " +" + order?.items.length,
             address: order?.address,
             eta: dayjs(order?.createdAt).add(90, 'm').format('hh:mm A')
         }
