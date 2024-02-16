@@ -33,7 +33,8 @@ const update = async ({ body }) => {
             {
                 $set: {
                     isAvailable: body.isAvailable,
-                    isVerified: body.isVerified
+                    isVerified: body.isVerified,
+                    bankDetails: body.bankDetails,
                 }
             },
             {
@@ -41,7 +42,7 @@ const update = async ({ body }) => {
             });
         if (!merchant) throw new Error('Merchant not found');
 
-        return { message: 'Status updated successfully' };
+        return { message: 'Merchant updated' };
     }
     catch (err) {
         throw new Error(err.message);
