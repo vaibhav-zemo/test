@@ -1,18 +1,16 @@
 require('dotenv').config();
-const Razorpay = require('razorpay');
-const crypto = require('crypto');
 const axios = require('axios');
 
 const verifyPayment = async ({ body }) => {
     try {
         const options = {
             method: 'GET',
-            url: `https://sandbox.cashfree.com/pg/orders/${body.orderId}`,
+            url: `https://api.cashfree.com/pg/orders/${body.orderId}`,
             headers: {
                 accept: 'application/json',
                 'x-api-version': '2023-08-01',
-                'x-client-id': process.env.TEST_CASHFREE_CLIENT_ID,
-                'x-client-secret': process.env.TEST_CASHFREE_SECRET_KEY
+                'x-client-id': process.env.CASHFREE_CLIENT_ID,
+                'x-client-secret': process.env.CASHFREE_SECRET_KEY
             }
         };
 
@@ -28,13 +26,13 @@ const createOrder = async ({ body }) => {
     try {
         const options = {
             method: 'POST',
-            url: 'https://sandbox.cashfree.com/pg/orders',
+            url: 'https://api.cashfree.com/pg/orders',
             headers: {
                 accept: 'application/json',
                 'x-api-version': '2023-08-01',
                 'content-type': 'application/json',
-                'x-client-id': process.env.TEST_CASHFREE_CLIENT_ID,
-                'x-client-secret': process.env.TEST_CASHFREE_SECRET_KEY
+                'x-client-id': process.env.CASHFREE_CLIENT_ID,
+                'x-client-secret': process.env.CASHFREE_SECRET_KEY
             },
             data: {
                 customer_details: {
