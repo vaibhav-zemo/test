@@ -5,6 +5,7 @@ const MerchantSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     isAvailable: { type: Boolean, default: false },
     orderAcceptedList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
+    orderRejectedList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
     city: { type: String, required: true },
     license: { type: String, required: true },
     bankDetails: {

@@ -3,7 +3,10 @@ const dayjs = require('dayjs');
 const merchantTransformer = {
     transform: (merchant) => {
         return {
-            userId: merchant?.userId,
+            userId: merchant?.userId._id,
+            name: merchant?.userId?.userName,
+            email: merchant?.userId?.email,
+            phoneNumber: merchant?.userId?.phoneNumber,
             merchantId: merchant?._id,
             isVerified: merchant?.isVerified,
             isAvailable: merchant?.isAvailable,

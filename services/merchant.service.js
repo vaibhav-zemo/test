@@ -15,7 +15,7 @@ const storage = getStorage();
 
 const show = async ({ userId }) => {
     try {
-        const merchant = await Merchant.findOne({ userId });
+        const merchant = await Merchant.findOne({ userId }).populate('userId');
         if (!merchant) throw new Error('Merchant not found');
 
         return merchant;
@@ -120,7 +120,7 @@ const getOrders = async ({ userId, orderStatus }) => {
 
         const orders = await Order.find({ city: merchant.city, status: orderStatus }).populate('items.product');
 
-        return orders;
+        return orders.filter(order => !(merchant.orderRejectedList.includes(order._id)));
     }
     catch (err) {
         throw new Error(err.message);
@@ -200,4 +200,23 @@ const earning = async ({ userId }) => {
     }
 }
 
-module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning }
+const declineOrder = async ({ userId, orderId }) => {
+    try {
+
+        const merchant = await Merchant.findOne({ userId: userId });
+        if (!merchant) throw new Error('Merchant not found');
+
+        const order = await Order.findById(orderId);
+        if (!order) throw new Error('Order not found');
+
+        merchant.orderRejectedList.push(order._id);
+        await merchant.save();
+
+        return { message: 'Order declined' };
+    }
+    catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning, declineOrder }

@@ -87,4 +87,13 @@ const earning = async (req, res) => {
     }
 }
 
-module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning }
+const declineOrder = async (req, res) => {
+    try {
+        return res.status(200).json(await merchantService.declineOrder({ userId: req.params.userId, orderId: req.body.orderId}));
+    }
+    catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning, declineOrder }

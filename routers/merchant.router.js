@@ -16,5 +16,7 @@ router.post('/profile', upload.single("license"), merchantController.create)
 router.put('/changeStatus', merchantController.update);
 router.put('/order/status/:userId', merchantController.updateOrderStatus)
 
+router.post('/order/decline/:userId', merchantController.declineOrder)
+
 
 module.exports = router;
