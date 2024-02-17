@@ -13,7 +13,7 @@ const orderDetailedTransformer = {
                     shopPrice: item?.shopPrice,
                     weight: item?.weight,
                     message: item?.message,
-                    occasion:  item?.occasion?.charAt(0).toUpperCase() + item?.occasion?.slice(1),
+                    occasion: item?.occasion?.charAt(0).toUpperCase() + item?.occasion?.slice(1),
                     flavour: item?.flavour,
                     rating: item?.rating,
                     discount: item?.discount,
@@ -37,7 +37,7 @@ const orderTransformer = {
             id: order?._id,
             createdAt: dayjs(order?.createdAt).format('D MMMM YYYY, hh:mm A'),
             status: order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1),
-            orderName: order?.orderName + " +" + order?.items.length,
+            orderName: order?.orderName + (order?.items?.length > 1 ? ` +${order?.items?.length - 1}` : ''),
             address: order?.address,
             eta: dayjs(order?.createdAt).add(90, 'm').format('hh:mm A')
         }
@@ -54,4 +54,4 @@ const orderListTransformer = {
     }
 }
 
-module.exports = {orderDetailedTransformer, orderTransformer, orderListTransformer};
+module.exports = { orderDetailedTransformer, orderTransformer, orderListTransformer };
