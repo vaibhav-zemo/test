@@ -6,9 +6,6 @@ const timezone = require('dayjs/plugin/timezone');
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-// Set the timezone to India
-dayjs.tz.setDefault('Asia/Kolkata');
-
 const orderDetailedTransformer = {
     transform: (order) => {
         return {
@@ -28,7 +25,7 @@ const orderDetailedTransformer = {
                     discount: item?.discount,
                 }
             }),
-            createdAt: dayjs(order?.createdAt).format('D MMMM YYYY, hh:mm A'),
+            createdAt: dayjs(order?.createdAt).tz('Asia/Kolkata').format('D MMMM YYYY, hh:mm A'),
             totalAmount: order?.totalAmount,
             totalShopAmount: order?.totalShopAmount,
             address: order?.address,
@@ -44,7 +41,7 @@ const orderTransformer = {
     transform: (order) => {
         return {
             id: order?._id,
-            createdAt: dayjs(order?.createdAt).format('D MMMM YYYY, hh:mm A'),
+            createdAt: dayjs(order?.createdAt).tz('Asia/Kolkata').format('D MMMM YYYY, hh:mm A'),
             status: order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1),
             orderName: order?.orderName + (order?.items?.length > 1 ? ` +${order?.items?.length - 1}` : ''),
             address: order?.address,
