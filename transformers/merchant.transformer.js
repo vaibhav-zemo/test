@@ -6,9 +6,6 @@ const timezone = require('dayjs/plugin/timezone');
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-// Set the timezone to India
-dayjs.tz.setDefault('Asia/Kolkata');
-
 const merchantTransformer = {
     transform: (merchant) => {
         return {
@@ -46,7 +43,7 @@ const merchantOrder = {
         return {
             orderId: order?._id,
             address: order?.address,
-            odt: dayjs(order?.createdAt).add(90, 'm').format('hh:mm A'),
+            odt: dayjs(order?.createdAt).tz('Asia/Kolkata').add(90, 'm').format('hh:mm A'),
         }
     }
 }

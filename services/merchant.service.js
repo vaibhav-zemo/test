@@ -178,7 +178,7 @@ const earning = async ({ userId }) => {
                 todayEarning += order.totalShopAmount + DELIVERY_FEE;
                 todayOrders.push({
                     orderId: order._id,
-                    createdAt: dayjs(order.createdAt).format('D MMMM YYYY, hh:mm A'),
+                    createdAt: dayjs(order.createdAt).tz('Asia/Kolkata').format('D MMMM YYYY, hh:mm A'),
                     amount: order.totalShopAmount + DELIVERY_FEE
                 });
             }
@@ -187,7 +187,7 @@ const earning = async ({ userId }) => {
                 weekEarning += order.totalShopAmount + DELIVERY_FEE;
                 weekOrders.push({
                     orderId: order._id,
-                    createdAt: dayjs(order.createdAt).format('D MMMM YYYY, hh:mm A'),
+                    createdAt: dayjs(order.createdAt).tz('Asia/Kolkata').format('D MMMM YYYY, hh:mm A'),
                     amount: order.totalShopAmount + DELIVERY_FEE
                 });
             }
