@@ -16,7 +16,7 @@ const create = async ({ data }) => {
             item.product = item.productId;
         }
 
-        const city = data.address.trim().split(' ').slice(-3, -2)[0];
+        const city = data.address.trim().split(', ').slice(-3, -2)[0];
 
         const order = new Order(data);
         if (!data.phoneNumber) order.phoneNumber = user.phoneNumber;
