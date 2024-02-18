@@ -81,11 +81,15 @@ const list = async ({ userId, orderStatus }) => {
             populate: {
                 path: 'items.product'
             }
-        }).sort({ createdAt: -1 });
+        });
 
         if (!customer) {
             throw new Error('Customer not found');
         }
+
+        customer.orders.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
 
         return customer.orders;
     } catch (error) {

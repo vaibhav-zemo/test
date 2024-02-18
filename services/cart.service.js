@@ -3,6 +3,7 @@ const User = require('../models/user.model')
 const Product = require('../models/product.model')
 const Coupon = require('../models/coupon.model')
 const discountType = require('../constants/discountType')
+const { ADDON } = require('../constants/categories')
 
 const create = async ({ userId, item }) => {
     try {
@@ -22,7 +23,7 @@ const create = async ({ userId, item }) => {
 
 const show = async ({ userId }) => {
     try {
-        const cart = await Cart.findOne({ userId }).populate({
+        let cart = await Cart.findOne({ userId }).populate({
             path: 'items',
             populate: {
                 path: 'product',
@@ -31,11 +32,15 @@ const show = async ({ userId }) => {
                 }
             }
         });
-        
+
         if (!cart) {
             throw new Error('Cart not found')
         }
 
+        const addons = cart.items.filter(item => item.product.category.name == ADDON);
+        const products = cart.items.filter(item => item.product.category.name != ADDON);
+
+        cart.items = [...products, ...addons];
         return { cart };
     }
     catch (error) {
@@ -106,7 +111,7 @@ const update = async ({ userId, data }) => {
             await cart.save();
             return { message: 'Coupon applied successfully' }
         }
-                
+
     } catch (error) {
         throw new Error(error)
     }

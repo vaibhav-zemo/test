@@ -1,4 +1,13 @@
 const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+
+// Extend Day.js with plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+// Set the timezone to India
+dayjs.tz.setDefault('Asia/Kolkata');
 
 const orderDetailedTransformer = {
     transform: (order) => {
@@ -27,7 +36,7 @@ const orderDetailedTransformer = {
             note: order?.note,
             couponCode: order?.couponCode,
             mobileNumber: order?.phoneNumber,
-        }
+                    }
     }
 }
 
