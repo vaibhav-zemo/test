@@ -90,8 +90,8 @@ const list = async ({ userId, orderStatus }) => {
         customer.orders.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
         });
-
-        return customer.orders;
+        
+        return {order: customer.orders, isMerchant: false};
     } catch (error) {
         throw new Error(error.message)
     }
