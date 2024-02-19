@@ -5,7 +5,7 @@ const verifyPayment = async ({ body }) => {
     try {
         const options = {
             method: 'GET',
-            url: process.env.CASHFREE_TEST_URL + body.orderId,
+            url: process.env.CASHFREE_TEST_URL + "/" + body.orderId,
             headers: {
                 accept: 'application/json',
                 'x-api-version': '2023-08-01',
