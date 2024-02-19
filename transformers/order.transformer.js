@@ -46,7 +46,6 @@ const orderTransformer = {
             orderName: order?.orderName + (order?.items?.length > 1 ? ` +${order?.items?.length - 1}` : ''),
             address: order?.address,
             eta: dayjs(order?.createdAt).add(90, 'm').format('hh:mm A'),
-            phoneNumber: order?.phoneNumber,
         }
     }
 }
