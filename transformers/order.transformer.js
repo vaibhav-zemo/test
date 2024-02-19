@@ -33,34 +33,29 @@ const orderDetailedTransformer = {
             note: order?.note,
             couponCode: order?.couponCode,
             mobileNumber: order?.phoneNumber,
-        }
+                    }
     }
 }
 
 const orderTransformer = {
-    transform: ({ order, isMerchant }) => {
-        const transformedOrder = {
+    transform: (order) => {
+        return {
             id: order?._id,
             createdAt: dayjs(order?.createdAt).tz('Asia/Kolkata').format('D MMMM YYYY, hh:mm A'),
             status: order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1),
             orderName: order?.orderName + (order?.items?.length > 1 ? ` +${order?.items?.length - 1}` : ''),
             address: order?.address,
             eta: dayjs(order?.createdAt).add(90, 'm').format('hh:mm A'),
+            phoneNumber: order?.phoneNumber,
         }
-
-        if(isMerchant) {
-            transformedOrder.phoneNumber = order?.phoneNumber;
-        }
-
-        return transformedOrder;
     }
 }
 
 const orderListTransformer = {
-    transform: ({ order: orderList, isMerchant }) => {
+    transform: (orderList) => {
         const response = {}
         response.list = orderList.map(order => {
-            return orderTransformer.transform({ order, isMerchant })
+            return orderTransformer.transform(order)
         })
         return response
     }

@@ -91,7 +91,7 @@ const list = async ({ userId, orderStatus }) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
         });
         
-        return {order: customer.orders, isMerchant: false};
+        return customer.orders;
     } catch (error) {
         throw new Error(error.message)
     }
