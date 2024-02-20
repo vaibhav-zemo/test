@@ -7,8 +7,8 @@ const create = async ({ phoneNumber, mail }) => {
         if (phoneNumber === '9999999999') {
             return { otp: '111111', userId: '65c32ee05bf089a0b62e3cd7' };
         }
-        else if(phoneNumber === '6666666666'){
-            return {otp: '111111', userId: '65d36b3e86a000aa992b64fc'}
+        else if(phoneNumber === '9616191991'){
+            return {otp: '111111', userId: '65cf2ff58a466088b1ae3fac'}
         }
         const otp = _generateOTP(6);
         if (mail) {
