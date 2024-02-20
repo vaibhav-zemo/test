@@ -7,7 +7,7 @@ const create = async (req, res) => {
         if (error) {
             return res.status(400).json({ message: error.message });
         }
-        return res.status(200).json(await ratingService.create({ ...value, userId: req.params.userId }));
+        return res.status(200).json(await ratingService.create({ ...value, orderId: req.params.orderId }));
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

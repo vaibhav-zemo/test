@@ -1,6 +1,7 @@
 const User = require('../models/user.model');
 const Customer = require('../models/customer.model');
 const Merchant = require('../models/merchant.model');
+const DeleteReason = require('../models/deleteReason.model');
 const { MERCHANT, CUSTOMER } = require('../constants/userRole');
 const jwt = require('jsonwebtoken');
 const dayjs = require('dayjs')
@@ -55,7 +56,7 @@ const update = async ({ data, userId }) => {
     }
 }
 
-const remove = async ({ userId }) => {
+const remove = async ({ userId, reason }) => {
     try {
         const user = await User.findById(userId);
         if (!user) throw new Error('User not found');
@@ -70,6 +71,9 @@ const remove = async ({ userId }) => {
         }
 
         await User.findByIdAndDelete(userId);
+
+        const deleteReason = new DeleteReason({reason});
+        await deleteReason.save();
         return { message: 'User deleted successfully' };
     }
     catch (error) {
@@ -109,7 +113,7 @@ const list = async () => {
 const show = async ({ userId }) => {
     try {
         let user = await User.findById(userId).populate('address');
-        if (!user) throw new Error('User not found');        
+        if (!user) throw new Error('User not found');
         return user;
     } catch (error) {
         throw new Error(error);
