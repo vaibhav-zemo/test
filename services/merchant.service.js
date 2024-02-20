@@ -155,7 +155,7 @@ const myOrders = async ({ userId }) => {
         const merchant = await Merchant.findOne({ userId: userId }).populate('orderAcceptedList');
         if (!merchant) throw new Error('Merchant not found');
 
-        return merchant.orderAcceptedList;
+        return {order: merchant.orderAcceptedList, isMerchant: true};
     }
     catch (err) {
         throw new Error(err.message);
