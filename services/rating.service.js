@@ -18,11 +18,11 @@ const create = async ({ orderId, products, userId }) => {
             productMap[product.productId] = product.rating;
         }
 
-        for (let item of order.items) {
-            if (!(item.product._id in productMap)) {
-                throw new Error('Product not found in order');
-            }
-        }
+        // for (let item of order.items) {
+        //     if (!(item.product._id in productMap)) {
+        //         throw new Error('Product not found in order');
+        //     }
+        // }
 
         const customer = await Customer.findOne({ userId: userId });
 
