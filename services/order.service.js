@@ -72,8 +72,7 @@ const list = async ({ userId, orderStatus }) => {
     try {
         if (orderStatus) {
             const orders = await Order.find({ status: orderStatus }).populate('items.product');
-
-            return orders;
+            return {order: orders, isMerchant: false};
         }
         const customer = await Customer.findOne({ userId }).populate({
             path: 'orders',

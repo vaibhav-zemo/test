@@ -15,6 +15,7 @@ const offerRoute = require('./routers/offer.router')
 const addonRoute = require('./routers/addon.router')
 const paymentRoute = require('./routers/payment.router')
 const merchantRoute = require('./routers/merchant.router')
+const adminRoute = require('./routers/admin.router')
 
 router.use('/auth', authRoute)
 router.use('/user', userRoute)
@@ -31,5 +32,6 @@ router.use('/offer', offerRoute)
 router.use('/addon', addonRoute)
 router.use('/payment', paymentRoute)
 router.use('/merchant', merchantRoute)
+router.use('/admin', adminRoute)
 
 module.exports = router
