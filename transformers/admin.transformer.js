@@ -10,7 +10,7 @@ const orderTransformer = {
     transform: (order) => {
         return {
             id: order?._id,
-            createdAt: dayjs(order?.createdAt).tz('Asia/Kolkata').format('D MMMM YYYY, hh:mm A'),
+            createdAt: dayjs(order?.createdAt).tz('Asia/Kolkata').format('MMM D, YYYY'),
             customerName: order?.userId?.userName,
             address: order?.address,
             amount: order?.totalAmount,
