@@ -18,12 +18,7 @@ const merchantTransformer = {
             isAvailable: merchant?.isAvailable,
             city: merchant?.city,
             license: merchant?.license,
-            bankDetails: {
-                accountNumber: merchant?.bankDetails?.accountNumber,
-                ifsc: merchant?.bankDetails?.ifsc,
-                branchName: merchant?.bankDetails?.branchName,
-                accountHolderName: merchant?.bankDetails?.accountHolderName,
-            }
+            upiId: merchant?.upiId
         }
     }
 }

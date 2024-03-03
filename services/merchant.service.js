@@ -3,9 +3,9 @@ const User = require('../models/user.model');
 const Merchant = require('../models/merchant.model');
 const { MERCHANT } = require('../constants/userRole');
 const Order = require('../models/order.model');
-const { PENDING, DELIVERED } = require('../constants/orderStatus');
+const { DELIVERED } = require('../constants/orderStatus');
 const { DELIVERY_FEE } = require('../constants/deliveryFee.js');
-
+const cron = require('node-cron');
 const { initializeApp } = require('firebase/app')
 const config = require('../config/firebase.config.js');
 initializeApp(config.firebaseConfig)
@@ -34,7 +34,7 @@ const update = async ({ body }) => {
                 $set: {
                     isAvailable: body.isAvailable,
                     isVerified: body.isVerified,
-                    bankDetails: body.bankDetails,
+                    upiId: body.upiId,
                 }
             },
             {
@@ -155,7 +155,7 @@ const myOrders = async ({ userId }) => {
         const merchant = await Merchant.findOne({ userId: userId }).populate('orderAcceptedList');
         if (!merchant) throw new Error('Merchant not found');
 
-        return {order: merchant.orderAcceptedList, isMerchant: true};
+        return { order: merchant.orderAcceptedList, isMerchant: true };
     }
     catch (err) {
         throw new Error(err.message);
@@ -167,33 +167,23 @@ const earning = async ({ userId }) => {
         const merchant = await Merchant.findOne({ userId: userId }).populate('orderAcceptedList');
         if (!merchant) throw new Error('Merchant not found');
 
-        const orders = merchant.orderAcceptedList.filter(order => order.status === DELIVERED);
+        const orders = merchant.orderAcceptedList.filter(order => order.status === DELIVERED).sort({createdAt: -1});
 
         const today = dayjs();
-        let todayEarning = 0, weekEarning = 0;
-        const todayOrders = [], weekOrders = [];
+        let monthEarning = 0, weekEarning = 0;
 
         for (let order of orders) {
-            if (dayjs(order.createdAt).isSame(today, 'day')) {
-                todayEarning += order.totalShopAmount + DELIVERY_FEE;
-                todayOrders.push({
-                    orderId: order._id,
-                    createdAt: dayjs(order.createdAt).tz('Asia/Kolkata').format('D MMMM YYYY, hh:mm A'),
-                    amount: order.totalShopAmount + DELIVERY_FEE
-                });
-            }
-
             if (dayjs(order.createdAt).isSame(today, 'week')) {
                 weekEarning += order.totalShopAmount + DELIVERY_FEE;
-                weekOrders.push({
-                    orderId: order._id,
-                    createdAt: dayjs(order.createdAt).tz('Asia/Kolkata').format('D MMMM YYYY, hh:mm A'),
-                    amount: order.totalShopAmount + DELIVERY_FEE
-                });
             }
+
+            if (dayjs(order.createdAt).isSame(today, 'month')) {
+                monthEarning += order.totalShopAmount + DELIVERY_FEE;
+            }
+            else break;
         }
 
-        return { todayEarning, todayOrders, weekEarning, weekOrders };
+        return { monthEarning, weekEarning };
     }
     catch (err) {
         throw new Error(err.message);
@@ -218,5 +208,11 @@ const declineOrder = async ({ userId, orderId }) => {
         throw new Error(err.message);
     }
 }
+
+// const _createLastWeekReport = () => {
+//     console.log('Creating Last Week Report at:', new Date());
+// }
+
+// cron.schedule('* * * * *', _createLastWeekReport);
 
 module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning, declineOrder }

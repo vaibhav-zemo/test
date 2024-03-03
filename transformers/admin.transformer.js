@@ -20,7 +20,7 @@ const orderTransformer = {
 }
 
 const orderListTransformer = {
-    transform: ({ orders: orderList, totalCustomers, todayOrders, totalAmount }) => {
+    transform: ({ orders: orderList, totalCustomers, todayOrders, totalAmount, totalOrders }) => {
         const response = {};
         response.list = orderList.map((order) => {
             return orderTransformer.transform(order);
@@ -28,9 +28,38 @@ const orderListTransformer = {
         response.totalCustomers = totalCustomers;
         response.todayOrders = todayOrders;
         response.totalAmount = totalAmount;
-        response.totalOrders = orderList.length;
+        response.totalOrders = totalOrders;
         return response;
     }
 }
 
-module.exports = { orderTransformer, orderListTransformer }
+const userTransformer = {
+    transform: (user, isMerchant) => {
+        const transformedUser = {
+            id: user?.userId?._id,
+            createdAt: dayjs(user?.createdAt).tz('Asia/Kolkata').format('MMM D, YYYY'),
+            name: user?.userId?.userName,
+            email: user?.userId?.email,
+        }
+
+        if (isMerchant) {
+            transformedUser.isVerified = user?.isVerified;
+            transformedUser.license = user?.license;
+            transformedUser.city = user?.city;
+        }
+
+        return transformedUser;
+    }
+}
+
+const userListTransformer = {
+    transform: ({users, isMerchant}) => {
+        const response = {};
+        response.list = users.map((user) => {
+            return userTransformer.transform(user, isMerchant);
+        })
+        return response;
+    }
+}
+
+module.exports = { orderListTransformer, userListTransformer }
