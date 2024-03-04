@@ -5,6 +5,7 @@ const { MERCHANT } = require('../constants/userRole');
 const Order = require('../models/order.model');
 const { DELIVERED } = require('../constants/orderStatus');
 const { DELIVERY_FEE } = require('../constants/deliveryFee.js');
+const { WEEK, MONTH, DAY, YEAR } = require('../constants/duration.js');
 const cron = require('node-cron');
 const { initializeApp } = require('firebase/app')
 const config = require('../config/firebase.config.js');
@@ -140,7 +141,11 @@ const updateOrderStatus = async ({ userId, data }) => {
         order.status = data.status;
         await order.save();
 
-        merchant.orderAcceptedList.push(order._id);
+        merchant.orderAcceptedList.push(order);
+        merchant.thisWeekOrders.push(order._id);
+        merchant.thisMonthOrders.push(order._id);
+        merchant.thisDayOrders.push(order._id);
+        merchant.thisYearOrders.push(order._id);
         await merchant.save();
 
         return { message: 'Order status updated' };
@@ -164,30 +169,72 @@ const myOrders = async ({ userId }) => {
 
 const earning = async ({ userId }) => {
     try {
-        const merchant = await Merchant.findOne({ userId: userId }).populate('orderAcceptedList');
+        const merchant = await Merchant.findOne({ userId: userId }).populate({
+            path: 'thisWeekOrders thisMonthOrders thisDayOrders thisYearOrders',
+        });
         if (!merchant) throw new Error('Merchant not found');
 
-        const orders = merchant.orderAcceptedList.filter(order => order.status === DELIVERED).sort({createdAt: -1});
+        const weekEarning = _calculateEarning(merchant.thisWeekOrders);
+        const monthEarning = _calculateEarning(merchant.thisMonthOrders);
+        const dayEarning = _calculateEarning(merchant.thisDayOrders);
+        const yearEarning = _calculateEarning(merchant.thisYearOrders);
 
-        const today = dayjs();
-        let monthEarning = 0, weekEarning = 0;
-
-        for (let order of orders) {
-            if (dayjs(order.createdAt).isSame(today, 'week')) {
-                weekEarning += order.totalShopAmount + DELIVERY_FEE;
-            }
-
-            if (dayjs(order.createdAt).isSame(today, 'month')) {
-                monthEarning += order.totalShopAmount + DELIVERY_FEE;
-            }
-            else break;
-        }
-
-        return { monthEarning, weekEarning };
+        return { monthEarning, weekEarning, dayEarning, yearEarning };
     }
     catch (err) {
         throw new Error(err.message);
     }
+}
+
+const pastEarnings = async ({ userId, duration }) => {
+    try {
+        const merchant = await Merchant.findOne({ userId: userId }).populate({
+            path: 'pastWeeksEarnings pastMonthsEarnings pastDaysEarnings pastYearsEarnings',
+            populate: {
+                path: 'orders'
+            }
+        }).populate({
+            path: 'thisWeekOrders thisMonthOrders thisDayOrders thisYearOrders'
+        });
+        if (!merchant) throw new Error('Merchant not found');
+
+        if (duration === WEEK) {
+            let pastWeeksEarnings = [];
+            pastWeeksEarnings.push({ orders: merchant.thisWeekOrders, duration: dayjs().startOf('week').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY') });
+            pastWeeksEarnings.push(...merchant.pastWeeksEarnings);
+            return { earnings: pastWeeksEarnings };
+        }
+        else if (duration === MONTH) {
+            let pastMonthsEarnings = [];
+            pastMonthsEarnings.push({ orders: merchant.thisMonthOrders, duration: dayjs().startOf('month').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY') });
+            pastMonthsEarnings.push(...merchant.pastMonthsEarnings);
+            return { earnings: pastMonthsEarnings };
+        }
+        else if (duration === DAY) {
+            let pastDaysEarnings = [];
+            pastDaysEarnings.push({ orders: merchant.thisDayOrders, duration: dayjs().format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY') });
+            pastDaysEarnings.push(...merchant.pastDaysEarnings);
+            return { earnings: pastDaysEarnings };
+        }
+        else if (duration === YEAR) {
+            let pastYearsEarnings = [];
+            pastYearsEarnings.push({ orders: merchant.thisYearOrders, duration: dayjs().startOf('year').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY') });
+            pastYearsEarnings.push(...merchant.pastYearsEarnings);
+            return { earnings: pastYearsEarnings };
+        }
+        else return { message: 'Invalid duration' };
+    }
+    catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+const _calculateEarning = (orders) => {
+    let totalEarning = 0;
+    for (let order of orders) {
+        totalEarning += order.totalShopAmount;
+    }
+    return totalEarning;
 }
 
 const declineOrder = async ({ userId, orderId }) => {
@@ -209,10 +256,73 @@ const declineOrder = async ({ userId, orderId }) => {
     }
 }
 
-// const _createLastWeekReport = () => {
-//     console.log('Creating Last Week Report at:', new Date());
-// }
+const _createLastWeekReport = () => {
+    const today = new Date();
+    const lastWeek = today.subtract(1, 'week');
+    const merchants = Merchant.find({}).populate('thisWeekOrders');
 
-// cron.schedule('* * * * *', _createLastWeekReport);
+    for (let merchant of merchants) {
+        const orders = merchant.thisWeekOrders;
+        merchant.pastWeeksEarnings.push({
+            duration: lastWeek.startOf('week').add(1, 'day').format('DD/MM/YYYY') + ' - ' + lastWeek.endOf('week').add(1, 'day').format('DD/MM/YYYY'),
+            orders
+        });
+        merchant.thisWeekOrders = [];
+        merchant.save();
+    }
+}
 
-module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning, declineOrder }
+const _createLastMonthReport = () => {
+    const today = new Date();
+    const lastMonth = today.subtract(1, 'month');
+    const merchants = Merchant.find({}).populate('thisMonthOrders');
+
+    for (let merchant of merchants) {
+        const orders = merchant.thisMonthOrders;
+        merchant.pastMonthsEarnings.push({
+            duration: lastMonth.startOf('month').format('DD/MM/YYYY') + ' - ' + lastMonth.endOf('month').format('DD/MM/YYYY'),
+            orders
+        });
+        merchant.thisMonthOrders = [];
+        merchant.save();
+    }
+}
+
+const _createLastDayReport = () => {
+    const today = new Date();
+    const lastDay = today.subtract(1, 'day');
+    const merchants = Merchant.find({}).populate('thisDayOrders');
+
+    for (let merchant of merchants) {
+        const orders = merchant.thisDayOrders;
+        merchant.pastDaysEarnings.push({
+            duration: lastDay.format('DD/MM/YYYY') + ' - ' + lastDay.format('DD/MM/YYYY'),
+            orders
+        });
+        merchant.thisDayOrders = [];
+        merchant.save();
+    }
+}
+
+const _createLastYearReport = () => {
+    const today = new Date();
+    const lastYear = today.subtract(1, 'year');
+    const merchants = Merchant.find({}).populate('thisYearOrders');
+
+    for (let merchant of merchants) {
+        const orders = merchant.thisYearOrders;
+        merchant.pastYearsEarnings.push({
+            duration: lastYear.startOf('year').format('DD/MM/YYYY') + ' - ' + lastYear.endOf('year').format('DD/MM/YYYY'),
+            orders
+        });
+        merchant.thisYearOrders = [];
+        merchant.save();
+    }
+}
+
+cron.schedule('0 0 * * 1', _createLastWeekReport);
+cron.schedule('0 0 1 * *', _createLastMonthReport);
+cron.schedule('0 0 * * *', _createLastDayReport);
+cron.schedule('0 0 1 1 *', _createLastYearReport);
+
+module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning, declineOrder, pastEarnings }

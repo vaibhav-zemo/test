@@ -18,5 +18,6 @@ router.put('/order/status/:userId', merchantController.updateOrderStatus)
 
 router.post('/order/decline/:userId', merchantController.declineOrder)
 
+router.get('/pastEarnings/:userId/:duration', merchantController.pastEarnings);
 
 module.exports = router;

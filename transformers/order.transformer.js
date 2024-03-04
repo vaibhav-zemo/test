@@ -60,7 +60,7 @@ const orderTransformer = {
 const orderListTransformer = {
     transform: ({ order: orderList, isMerchant }) => {
         const response = {}
-        response.list = orderList.map(order => {
+        response.list = orderList?.map(order => {
             return orderTransformer.transform({ order, isMerchant })
         })
         return response

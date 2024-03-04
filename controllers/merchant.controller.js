@@ -1,5 +1,5 @@
 const merchantService = require('../services/merchant.service');
-const { merchantListTransformer, merchantTransformer, merchantOrderList } = require('../transformers/merchant.transformer');
+const { merchantListTransformer, merchantTransformer, merchantOrderList, merchantEarningList } = require('../transformers/merchant.transformer');
 const { isValidForUpdate } = require('../validators/merchant.validator');
 const { orderListTransformer } = require('../transformers/order.transformer');
 
@@ -96,4 +96,13 @@ const declineOrder = async (req, res) => {
     }
 }
 
-module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning, declineOrder }
+const pastEarnings = async(req, res) => {
+    try {
+        return res.status(200).json(merchantEarningList.transform(await merchantService.pastEarnings({ userId: req.params.userId, duration: req.params.duration })));
+    }
+    catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { show, update, list, isAvailable, create, getOrders, updateOrderStatus, myOrders, earning, declineOrder, pastEarnings}

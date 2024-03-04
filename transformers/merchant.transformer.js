@@ -1,6 +1,7 @@
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
+const { orderListTransformer } = require('./order.transformer');
 
 // Extend Day.js with plugins
 dayjs.extend(utc);
@@ -53,4 +54,23 @@ const merchantOrderList = {
     }
 }
 
-module.exports = { merchantTransformer, merchantListTransformer, merchantOrderList };
+const merchantEarning = {
+    transform: (earning) => {
+        return {
+            duration: earning?.duration,
+            orders: orderListTransformer.transform({ order: earning?.orders, isMerchant: true })
+        }
+    }
+}
+
+const merchantEarningList = {
+    transform: ({ earnings }) => {
+        const response = {};
+        response.list = earnings?.map(earning => {
+            return merchantEarning.transform(earning);
+        })
+        return response;
+    }
+}
+
+module.exports = { merchantTransformer, merchantListTransformer, merchantOrderList, merchantEarningList };
