@@ -58,7 +58,8 @@ const merchantEarning = {
     transform: (earning) => {
         return {
             duration: earning?.duration,
-            orders: orderListTransformer.transform({ order: earning?.orders, isMerchant: true })
+            orders: orderListTransformer.transform({ order: earning?.orders, isMerchant: true }),
+            totalEarning: earning?.totalEarning
         }
     }
 }

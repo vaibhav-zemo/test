@@ -10,28 +10,32 @@ const MerchantSchema = new mongoose.Schema({
         {
             duration: { type: String },
             orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
-            createdAt: { type: Date, default: Date.now }
+            createdAt: { type: Date, default: Date.now },
+            totalEarning: { type: Number, default: 0 }
         }
     ],
     pastMonthsEarnings: [
         {
             duration: { type: String },
             orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
-            createdAt: { type: Date, default: Date.now }
+            createdAt: { type: Date, default: Date.now },
+            totalEarning: { type: Number, default: 0 }
         }
     ],
     pastDaysEarnings: [
         {
             duration: { type: String },
             orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
-            createdAt: { type: Date, default: Date.now }
+            createdAt: { type: Date, default: Date.now },
+            totalEarning: { type: Number, default: 0 }
         }
     ],
     pastYearsEarnings: [
         {
             duration: { type: String },
             orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
-            createdAt: { type: Date, default: Date.now }
+            createdAt: { type: Date, default: Date.now },
+            totalEarning: { type: Number, default: 0 }
         }
     ],
     thisWeekOrders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],

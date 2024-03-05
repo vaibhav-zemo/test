@@ -1,4 +1,8 @@
 const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+
+// Extend Day.js with plugins
 const User = require('../models/user.model');
 const Merchant = require('../models/merchant.model');
 const { MERCHANT } = require('../constants/userRole');
@@ -13,6 +17,9 @@ initializeApp(config.firebaseConfig)
 
 const { getStorage, ref, uploadBytesResumable, getDownloadURL } = require('firebase/storage')
 const storage = getStorage();
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const show = async ({ userId }) => {
     try {
@@ -198,29 +205,39 @@ const pastEarnings = async ({ userId, duration }) => {
         });
         if (!merchant) throw new Error('Merchant not found');
 
+        let totalEarning = 0;
+        let pastEarnings = [];
         if (duration === WEEK) {
-            let pastWeeksEarnings = [];
-            pastWeeksEarnings.push({ orders: merchant.thisWeekOrders, duration: dayjs().startOf('week').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY') });
-            pastWeeksEarnings.push(...merchant.pastWeeksEarnings);
-            return { earnings: pastWeeksEarnings };
+            for (let order of merchant.thisWeekOrders) {
+                totalEarning += order.totalShopAmount;
+            }
+            pastEarnings.push({ orders: merchant.thisWeekOrders, duration: dayjs().startOf('week').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY'), totalEarning });
+            pastEarnings.push(...merchant.pastWeeksEarnings);
+            return { earnings: pastEarnings };
         }
         else if (duration === MONTH) {
-            let pastMonthsEarnings = [];
-            pastMonthsEarnings.push({ orders: merchant.thisMonthOrders, duration: dayjs().startOf('month').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY') });
-            pastMonthsEarnings.push(...merchant.pastMonthsEarnings);
-            return { earnings: pastMonthsEarnings };
+            for (let order of merchant.thisMonthOrders) {
+                totalEarning += order.totalShopAmount;
+            }
+            pastEarnings.push({ orders: merchant.thisMonthOrders, duration: dayjs().startOf('month').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY'), totalEarning });
+            pastEarnings.push(...merchant.pastMonthsEarnings);
+            return { earnings: pastEarnings };
         }
         else if (duration === DAY) {
-            let pastDaysEarnings = [];
-            pastDaysEarnings.push({ orders: merchant.thisDayOrders, duration: dayjs().format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY') });
-            pastDaysEarnings.push(...merchant.pastDaysEarnings);
-            return { earnings: pastDaysEarnings };
+            for (let order of merchant.thisDayOrders) {
+                totalEarning += order.totalShopAmount;
+            }
+            pastEarnings.push({ orders: merchant.thisDayOrders, duration: dayjs().format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY'), totalEarning });
+            pastEarnings.push(...merchant.pastDaysEarnings);
+            return { earnings: pastEarnings };
         }
         else if (duration === YEAR) {
-            let pastYearsEarnings = [];
-            pastYearsEarnings.push({ orders: merchant.thisYearOrders, duration: dayjs().startOf('year').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY') });
-            pastYearsEarnings.push(...merchant.pastYearsEarnings);
-            return { earnings: pastYearsEarnings };
+            for (let order of merchant.thisYearOrders) {
+                totalEarning += order.totalShopAmount;
+            }
+            pastEarnings.push({ orders: merchant.thisYearOrders, duration: dayjs().startOf('year').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY'), totalEarning });
+            pastEarnings.push(...merchant.pastYearsEarnings);
+            return { earnings: pastEarnings };
         }
         else return { message: 'Invalid duration' };
     }
@@ -256,67 +273,87 @@ const declineOrder = async ({ userId, orderId }) => {
     }
 }
 
-const _createLastWeekReport = () => {
-    const today = new Date();
+const _createLastWeekReport = async () => {
+    const today = dayjs().tz('Asia/Kolkata');
     const lastWeek = today.subtract(1, 'week');
-    const merchants = Merchant.find({}).populate('thisWeekOrders');
+    const merchants = await Merchant.find({}).populate('thisWeekOrders');
 
     for (let merchant of merchants) {
+        let totalEarning = 0;
         const orders = merchant.thisWeekOrders;
+        for (let order of orders) {
+            totalEarning += order.totalShopAmount;
+        }
         merchant.pastWeeksEarnings.push({
             duration: lastWeek.startOf('week').add(1, 'day').format('DD/MM/YYYY') + ' - ' + lastWeek.endOf('week').add(1, 'day').format('DD/MM/YYYY'),
-            orders
+            orders,
+            totalEarning
         });
         merchant.thisWeekOrders = [];
-        merchant.save();
+        await merchant.save();
     }
 }
 
-const _createLastMonthReport = () => {
-    const today = new Date();
+const _createLastMonthReport = async () => {
+    const today = dayjs().tz('Asia/Kolkata');
     const lastMonth = today.subtract(1, 'month');
-    const merchants = Merchant.find({}).populate('thisMonthOrders');
+    const merchants = await Merchant.find({}).populate('thisMonthOrders');
 
     for (let merchant of merchants) {
+        let totalEarning = 0;
         const orders = merchant.thisMonthOrders;
+        for (let order of orders) {
+            totalEarning += order.totalShopAmount;
+        }
         merchant.pastMonthsEarnings.push({
             duration: lastMonth.startOf('month').format('DD/MM/YYYY') + ' - ' + lastMonth.endOf('month').format('DD/MM/YYYY'),
-            orders
+            orders,
+            totalEarning
         });
         merchant.thisMonthOrders = [];
-        merchant.save();
+        await merchant.save();
     }
 }
 
-const _createLastDayReport = () => {
-    const today = new Date();
+const _createLastDayReport = async () => {
+    const today = dayjs().tz('Asia/Kolkata');
     const lastDay = today.subtract(1, 'day');
-    const merchants = Merchant.find({}).populate('thisDayOrders');
+    const merchants = await Merchant.find({}).populate('thisDayOrders');
 
     for (let merchant of merchants) {
+        let totalEarning = 0;
         const orders = merchant.thisDayOrders;
+        for (let order of orders) {
+            totalEarning += order.totalShopAmount;
+        }
         merchant.pastDaysEarnings.push({
             duration: lastDay.format('DD/MM/YYYY') + ' - ' + lastDay.format('DD/MM/YYYY'),
-            orders
+            orders,
+            totalEarning
         });
         merchant.thisDayOrders = [];
-        merchant.save();
+        await merchant.save();
     }
 }
 
-const _createLastYearReport = () => {
-    const today = new Date();
+const _createLastYearReport = async () => {
+    const today = dayjs().tz('Asia/Kolkata');
     const lastYear = today.subtract(1, 'year');
-    const merchants = Merchant.find({}).populate('thisYearOrders');
+    const merchants = await Merchant.find({}).populate('thisYearOrders');
 
     for (let merchant of merchants) {
+        let totalEarning = 0;
         const orders = merchant.thisYearOrders;
+        for (let order of orders) {
+            totalEarning += order.totalShopAmount;
+        }
         merchant.pastYearsEarnings.push({
             duration: lastYear.startOf('year').format('DD/MM/YYYY') + ' - ' + lastYear.endOf('year').format('DD/MM/YYYY'),
-            orders
+            orders,
+            totalEarning
         });
         merchant.thisYearOrders = [];
-        merchant.save();
+        await merchant.save();
     }
 }
 
