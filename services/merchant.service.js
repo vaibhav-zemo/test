@@ -7,7 +7,7 @@ const User = require('../models/user.model');
 const Merchant = require('../models/merchant.model');
 const { MERCHANT } = require('../constants/userRole');
 const Order = require('../models/order.model');
-const { DELIVERED } = require('../constants/orderStatus');
+const { DELIVERED, ONGOING } = require('../constants/orderStatus');
 const { DELIVERY_FEE } = require('../constants/deliveryFee.js');
 const { WEEK, MONTH, DAY, YEAR } = require('../constants/duration.js');
 const cron = require('node-cron');
@@ -127,6 +127,7 @@ const getOrders = async ({ userId, orderStatus }) => {
         if (!merchant.isAvailable) throw new Error('Merchant not available');
 
         const orders = await Order.find({ city: merchant.city, status: orderStatus }).populate('items.product');
+        if (!orders) throw new Error('No orders found');
 
         return orders.filter(order => !(merchant.orderRejectedList.includes(order._id)));
     }
@@ -140,6 +141,10 @@ const updateOrderStatus = async ({ userId, data }) => {
         const order = await Order.findById(data.orderId);
         if (!order) {
             throw new Error('Order not found');
+        }
+
+        if (order.status !== ONGOING) {
+            throw new Error('Order already accepted or delivered by another merchant');
         }
 
         const merchant = await Merchant.findOne({ userId: userId });
@@ -212,34 +217,36 @@ const pastEarnings = async ({ userId, duration }) => {
                 totalEarning += order.totalShopAmount;
             }
             pastEarnings.push({ orders: merchant.thisWeekOrders, duration: dayjs().startOf('week').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY'), totalEarning });
-            pastEarnings.push(...merchant.pastWeeksEarnings);
-            return { earnings: pastEarnings };
+            let pastWeeksEarnings = merchant.pastWeeksEarnings.sort((a, b) => dayjs(a.createdAt).isBefore(dayjs(b.createdAt)) ? 1 : -1);
+            pastEarnings.push(...pastWeeksEarnings);
         }
         else if (duration === MONTH) {
             for (let order of merchant.thisMonthOrders) {
                 totalEarning += order.totalShopAmount;
             }
             pastEarnings.push({ orders: merchant.thisMonthOrders, duration: dayjs().startOf('month').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY'), totalEarning });
-            pastEarnings.push(...merchant.pastMonthsEarnings);
-            return { earnings: pastEarnings };
+            let pastMonthsEarnings = merchant.pastMonthsEarnings.sort((a, b) => dayjs(a.createdAt).isBefore(dayjs(b.createdAt)) ? 1 : -1);
+            pastEarnings.push(...pastMonthsEarnings);
         }
         else if (duration === DAY) {
             for (let order of merchant.thisDayOrders) {
                 totalEarning += order.totalShopAmount;
             }
             pastEarnings.push({ orders: merchant.thisDayOrders, duration: dayjs().format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY'), totalEarning });
-            pastEarnings.push(...merchant.pastDaysEarnings);
-            return { earnings: pastEarnings };
+            let pastDaysEarnings = merchant.pastDaysEarnings.sort((a, b) => dayjs(a.createdAt).isBefore(dayjs(b.createdAt)) ? 1 : -1);
+            pastEarnings.push(...pastDaysEarnings);
         }
         else if (duration === YEAR) {
             for (let order of merchant.thisYearOrders) {
                 totalEarning += order.totalShopAmount;
             }
             pastEarnings.push({ orders: merchant.thisYearOrders, duration: dayjs().startOf('year').format('DD/MM/YYYY') + ' - ' + dayjs().format('DD/MM/YYYY'), totalEarning });
-            pastEarnings.push(...merchant.pastYearsEarnings);
-            return { earnings: pastEarnings };
+            let pastYearsEarnings = merchant.pastYearsEarnings.sort((a, b) => dayjs(a.createdAt).isBefore(dayjs(b.createdAt)) ? 1 : -1);
+            pastEarnings.push(...pastYearsEarnings);
         }
         else return { message: 'Invalid duration' };
+
+        return { earnings: pastEarnings }
     }
     catch (err) {
         throw new Error(err.message);

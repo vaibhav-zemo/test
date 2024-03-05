@@ -18,7 +18,7 @@ const OrderSchema = new mongoose.Schema({
     totalAmount: { type: Number, required: true },
     totalShopAmount: { type: Number },
     address: { type: String, required: true },
-    status: { type: String, enum: [orderStatus.PENDING, orderStatus.ACCEPTED, orderStatus.CANCELLED, orderStatus.DELIVERED, orderStatus.DISPATCHED], default: orderStatus.PENDING },
+    status: { type: String, enum: [orderStatus.ONGOING, orderStatus.ACCEPTED, orderStatus.CANCELLED, orderStatus.DELIVERED, orderStatus.DISPATCHED], default: orderStatus.ONGOING },
     note: { type: String },
     couponCode: { type: String },
     paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Payment' },

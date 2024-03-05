@@ -1,7 +1,7 @@
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi)
 const { BIRTHDAY, ANNIVERSARY, OTHER } = require('../constants/occasionType')
-const { PENDING, ACCEPTED, CANCELLED, DELIVERED, DISPATCHED } = require('../constants/orderStatus')
+const { ONGOING, ACCEPTED, CANCELLED, DELIVERED, DISPATCHED } = require('../constants/orderStatus')
 
 const isValidForCreate = Joi.object({
     userId: Joi.objectId().required(),
@@ -25,7 +25,7 @@ const isValidForCreate = Joi.object({
 })
 
 const isValidForUpdate = Joi.object({
-    status: Joi.string().valid(PENDING, ACCEPTED, CANCELLED, DELIVERED, DISPATCHED),
+    status: Joi.string().valid(ONGOING, ACCEPTED, CANCELLED, DELIVERED, DISPATCHED),
     paymentId: Joi.objectId(),
 }).min(1);
 

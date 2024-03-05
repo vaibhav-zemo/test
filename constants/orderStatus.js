@@ -1,5 +1,5 @@
 module.exports = {
-    PENDING: 'pending',
+    ONGOING: 'ongoing',
     DISPATCHED: 'dispatched',
     DELIVERED: 'delivered',
     CANCELLED: 'cancelled',
